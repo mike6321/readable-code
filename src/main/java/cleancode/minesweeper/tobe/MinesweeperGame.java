@@ -35,24 +35,32 @@ public class MinesweeperGame {
             }
             String cellInput = getCellInputFromUser(scanner);
             String userActionInput = getUserActionIputFromUser(scanner);
-            int selectColumnIndex = getSelectedColumnIndex(cellInput);
-            int selectedRowIndex = getSelectedRowIndex(cellInput);
-            if (doesUserChooseToPlantFlag(userActionInput)) {
-                BOARD[selectedRowIndex][selectColumnIndex] = FLAG_SIGN;
-                checkGameIsOver();
-            } else if (doesUserChooseToOpenCell(userActionInput)) {
-                if (isLandMineCell(selectedRowIndex, selectColumnIndex)) {
-                    BOARD[selectedRowIndex][selectColumnIndex] = LAND_MINE_SIGN;
-                    changeGameStatusToLose();
-                    continue;
-                } else {
-                    open(selectedRowIndex, selectColumnIndex);
-                }
-                checkGameIsOver();
-            } else {
-                System.out.println("잘못된 번호를 선택하셨습니다.");
-            }
+            actOnCell(cellInput, userActionInput);
         }
+    }
+
+    private static void actOnCell(String cellInput, String userActionInput) {
+        int selectColumnIndex = getSelectedColumnIndex(cellInput);
+        int selectedRowIndex = getSelectedRowIndex(cellInput);
+        if (doesUserChooseToPlantFlag(userActionInput)) {
+            BOARD[selectedRowIndex][selectColumnIndex] = FLAG_SIGN;
+            checkGameIsOver();
+            return;
+        }
+
+        if (doesUserChooseToOpenCell(userActionInput)) {
+            if (isLandMineCell(selectedRowIndex, selectColumnIndex)) {
+                BOARD[selectedRowIndex][selectColumnIndex] = LAND_MINE_SIGN;
+                changeGameStatusToLose();
+                return;
+            }
+
+            open(selectedRowIndex, selectColumnIndex);
+            checkGameIsOver();
+            return;
+        }
+
+        System.out.println("잘못된 번호를 선택하셨습니다.");
     }
 
     private static void changeGameStatusToLose() {
