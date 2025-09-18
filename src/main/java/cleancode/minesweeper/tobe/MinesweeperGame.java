@@ -186,41 +186,46 @@ public class MinesweeperGame {
             int row = new Random().nextInt(8);
             LAND_MINES[row][col] = true;
         }
-        
+
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 10; column++) {
                 int count = 0;
-                if (!isLandMineCell(row, column)) {
-                    if (row - 1 >= 0 && column - 1 >= 0 && isLandMineCell(row - 1, column - 1)) {
-                        count++;
-                    }
-                    if (row - 1 >= 0 && isLandMineCell(row - 1, column)) {
-                        count++;
-                    }
-                    if (row - 1 >= 0 && column + 1 < 10 && isLandMineCell(row - 1, column + 1)) {
-                        count++;
-                    }
-                    if (column - 1 >= 0 && isLandMineCell(row, column - 1)) {
-                        count++;
-                    }
-                    if (column + 1 < 10 && isLandMineCell(row, column + 1)) {
-                        count++;
-                    }
-                    if (row + 1 < 8 && column - 1 >= 0 && isLandMineCell(row + 1, column - 1)) {
-                        count++;
-                    }
-                    if (row + 1 < 8 && isLandMineCell(row + 1, column)) {
-                        count++;
-                    }
-                    if (row + 1 < 8 && column + 1 < 10 && isLandMineCell(row + 1, column + 1)) {
-                        count++;
-                    }
-                    NEARBY_LAND_MINE_COUNTS[row][column] = count;
-                    continue;
+                if (isLandMineCell(row, column)) {
+                    NEARBY_LAND_MINE_COUNTS[row][column] = 0;
+                    return;
                 }
-                NEARBY_LAND_MINE_COUNTS[row][column] = 0;
+                count = countNearbyLandMines(row, column, count);
+                NEARBY_LAND_MINE_COUNTS[row][column] = count;
             }
         }
+    }
+
+    private static int countNearbyLandMines(int row, int column, int count) {
+        if (row - 1 >= 0 && column - 1 >= 0 && isLandMineCell(row - 1, column - 1)) {
+            count++;
+        }
+        if (row - 1 >= 0 && isLandMineCell(row - 1, column)) {
+            count++;
+        }
+        if (row - 1 >= 0 && column + 1 < 10 && isLandMineCell(row - 1, column + 1)) {
+            count++;
+        }
+        if (column - 1 >= 0 && isLandMineCell(row, column - 1)) {
+            count++;
+        }
+        if (column + 1 < 10 && isLandMineCell(row, column + 1)) {
+            count++;
+        }
+        if (row + 1 < 8 && column - 1 >= 0 && isLandMineCell(row + 1, column - 1)) {
+            count++;
+        }
+        if (row + 1 < 8 && isLandMineCell(row + 1, column)) {
+            count++;
+        }
+        if (row + 1 < 8 && column + 1 < 10 && isLandMineCell(row + 1, column + 1)) {
+            count++;
+        }
+        return count;
     }
 
     private static void showGameStartComments() {
