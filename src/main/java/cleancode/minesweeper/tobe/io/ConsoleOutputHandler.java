@@ -1,5 +1,6 @@
 package cleancode.minesweeper.tobe.io;
 
+import cleancode.minesweeper.tobe.GameBoard;
 import cleancode.minesweeper.tobe.GameException;
 import cleancode.minesweeper.tobe.Cell;
 
@@ -11,12 +12,12 @@ public class ConsoleOutputHandler {
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }
 
-    public void showBoard(Cell[][] board) {
+    public void showBoard(GameBoard board) {
         System.out.println("   a b c d e f g h i j");
-        for (int row = 0; row < board.length; row++) {
+        for (int row = 0; row < board.getRowSize(); row++) {
             System.out.printf("%d  ", row + 1);
-            for (int column = 0; column < board[0].length; column++) {
-                System.out.print(board[row][column].getSign() + " ");
+            for (int column = 0; column < board.getColSize(); column++) {
+                System.out.print(board.getSign(row, column) + " ");
             }
             System.out.println();
         }
