@@ -1,19 +1,22 @@
 package cleancode.minesweeper.tobe;
 
+import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.io.ConsoleInputHandler;
 import cleancode.minesweeper.tobe.io.ConsoleOutputHandler;
 
 public class Minesweeper {
 
     // 상수추출: option + command + c
-    private static final int BOARD_ROW_SIZE = 14;
-    private static final int BOARD_COL_SIZE = 18;
-    private final GameBoard gameBoard = new GameBoard(BOARD_ROW_SIZE, BOARD_COL_SIZE);
+    private final GameBoard gameBoard;
     private final BoardIndexConverter boardIndexConverter = new BoardIndexConverter();
     private final ConsoleInputHandler consoleInputHandler = new ConsoleInputHandler();
     private final ConsoleOutputHandler consoleOutputHandler = new ConsoleOutputHandler();
 
     private int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
+
+    public Minesweeper(GameLevel gameLevel) {
+        gameBoard = new GameBoard(gameLevel);
+    }
 
     public void run() {
         consoleOutputHandler.showGameStartComments();
