@@ -156,4 +156,11 @@ public class GameBoard {
         return findCell(row, col).isOpened();
     }
 
+    public void temp(Cell2 cell2) {
+        // LSP 위반으로 일어나는 side effect
+        if (cell2 instanceof NumberCell) {
+            cell2.updateNearbyLandMinCount(0);
+        }
+    }
+
 }
