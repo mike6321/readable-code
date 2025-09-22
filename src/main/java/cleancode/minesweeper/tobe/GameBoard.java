@@ -1,6 +1,6 @@
 package cleancode.minesweeper.tobe;
 
-import cleancode.minesweeper.tobe.cell.Cell2;
+import cleancode.minesweeper.tobe.cell.Cell;
 import cleancode.minesweeper.tobe.cell.EmptyCell;
 import cleancode.minesweeper.tobe.cell.LandMineCell;
 import cleancode.minesweeper.tobe.cell.NumberCell;
@@ -11,13 +11,13 @@ import java.util.Random;
 
 public class GameBoard {
 
-    private final Cell2[][] board;
+    private final Cell[][] board;
     private final int landMineCount;
 
     public GameBoard(GameLevel gameLevel) {
         int colSize = gameLevel.getColSize();
         int rowSize = gameLevel.getRowSize();
-        this.board = new Cell2[rowSize][colSize];
+        this.board = new Cell[rowSize][colSize];
 
         this.landMineCount = gameLevel.getLandMineCount();
     }
@@ -34,9 +34,7 @@ public class GameBoard {
         for (int i = 0; i < landMineCount; i++) {
             int landMineCol = new Random().nextInt(10);
             int landMineRow = new Random().nextInt(8);
-            LandMineCell landMineCell = new LandMineCell();
-            landMineCell.turnOnlandMine();
-            board[landMineRow][landMineCol] = landMineCell;
+            board[landMineRow][landMineCol]  = new LandMineCell();
         }
 
         for (int row = 0; row < rowSize; row++) {
@@ -49,32 +47,31 @@ public class GameBoard {
                 if (count == 0) {
                     continue;
                 }
-                NumberCell numberCell = new NumberCell();
-                numberCell.updateNearbyLandMinCount(count);
+                NumberCell numberCell = new NumberCell(count);
                 board[row][column] = numberCell;
             }
         }
     }
 
     public void flag(int rowIndex, int columnIndex) {
-        Cell2 cell2 = this.findCell(rowIndex, columnIndex);
-        cell2.flag();
+        Cell cell = this.findCell(rowIndex, columnIndex);
+        cell.flag();
     }
 
     public void opened(int rowIndex, int columnIndex) {
-        Cell2 cell2 = this.findCell(rowIndex, columnIndex);
-        cell2.opened();
+        Cell cell = this.findCell(rowIndex, columnIndex);
+        cell.opened();
     }
 
     public boolean isLandMineCell(int selectedRowIndex, int selectColumnIndex) {
-        Cell2 cell2 = findCell(selectedRowIndex, selectColumnIndex);
-        return cell2.isLandMine();
+        Cell cell = findCell(selectedRowIndex, selectColumnIndex);
+        return cell.isLandMine();
     }
 
     public boolean isAllCellChecked() {
         return Arrays.stream(board)
                 .flatMap(Arrays::stream)
-                .allMatch(Cell2::isChecked);
+                .allMatch(Cell::isChecked);
     }
 
     private int countNearbyLandMines(int row, int column, int count) {
@@ -117,11 +114,11 @@ public class GameBoard {
     }
 
     public String getSign(int row, int column) {
-        Cell2 cell2 = findCell(row, column);
-        return cell2.getSign();
+        Cell cell = findCell(row, column);
+        return cell.getSign();
     }
 
-    private Cell2 findCell(int rowIndex, int columnIndex) {
+    private Cell findCell(int rowIndex, int columnIndex) {
         return board[rowIndex][columnIndex];
     }
 
@@ -154,13 +151,6 @@ public class GameBoard {
 
     private boolean isOpenedCell(int row, int col) {
         return findCell(row, col).isOpened();
-    }
-
-    public void temp(Cell2 cell2) {
-        // LSP 위반으로 일어나는 side effect
-        if (cell2 instanceof NumberCell) {
-            cell2.updateNearbyLandMinCount(0);
-        }
     }
 
 }
