@@ -9,21 +9,21 @@ public interface OutputHandler {
 
     void showBoard(GameBoard board) ;
 
-    void printGameWinningComment();
+    void showGameWinningComment();
 
 
-    void printGameLosingComment();
+    void showGameLosingComment();
 
 
-    void printCommentForSelectingCell();
+    void showCommentForSelectingCell();
 
 
-    void printCommentForUserAction();
+    void showCommentForUserAction();
 
 
-    void pringExceptionMessage(GameException e);
+    void showExceptionMessage(GameException e);
 
 
-    void printSimpleMessage(String message);
+    void showSimpleMessage(String message);
     
 }

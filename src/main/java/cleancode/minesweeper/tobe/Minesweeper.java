@@ -34,12 +34,12 @@ public class Minesweeper implements GameInitializable, GameRunnable {
                 outputHandler.showBoard(gameBoard);
 
                 if (doesUserWinTheGame()) {
-                    outputHandler.printGameWinningComment();
+                    outputHandler.showGameWinningComment();
 
                     break;
                 }
                 if (doesUserLoseTheGame()) {
-                    outputHandler.printGameLosingComment();
+                    outputHandler.showGameLosingComment();
                     break;
                 }
 
@@ -47,9 +47,9 @@ public class Minesweeper implements GameInitializable, GameRunnable {
                 String userActionInput = getUserActionIputFromUser();
                 actOnCell(cellInput, userActionInput);
             } catch (GameException e) {
-                outputHandler.pringExceptionMessage(e);
+                outputHandler.showExceptionMessage(e);
             } catch (Exception e) {
-                outputHandler.printSimpleMessage("프로그램에 문제 발생");
+                outputHandler.showSimpleMessage("프로그램에 문제 발생");
             }
         }
     }
@@ -92,12 +92,12 @@ public class Minesweeper implements GameInitializable, GameRunnable {
     }
 
     private String getUserActionIputFromUser() {
-        outputHandler.printCommentForUserAction();
+        outputHandler.showCommentForUserAction();
         return inputHandler.getUerInput();
     }
 
     private String getCellInputFromUser() {
-        outputHandler.printCommentForSelectingCell();
+        outputHandler.showCommentForSelectingCell();
         return inputHandler.getUerInput();
     }
 
