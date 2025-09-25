@@ -3,6 +3,7 @@ package cleancode.minesweeper.tobe;
 import cleancode.minesweeper.tobe.cell.*;
 import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.position.CellPosition;
+import cleancode.minesweeper.tobe.position.CellPositions;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 
 import java.util.Arrays;
@@ -23,20 +24,16 @@ public class GameBoard {
     }
 
     public void initializeGame() {
-        int rowSize = board.length;
-        int colSize = board[0].length;
-        for (int row = 0; row < rowSize; row++) {
-            for (int column = 0; column < colSize; column++) {
-                board[row][column] = new EmptyCell();
-            }
-        }
+        CellPositions cellPositions = CellPositions.from(board);
 
-        for (int i = 0; i < landMineCount; i++) {
-            int landMineCol = new Random().nextInt(10);
-            int landMineRow = new Random().nextInt(8);
-            board[landMineRow][landMineCol] = new LandMineCell();
-        }
+        List<CellPosition> allPositions = cellPositions.getPositions();
+        updateCellsAt(allPositions, new EmptyCell());
 
+        List<CellPosition> landMinePositions = cellPositions.extractRandomPositions(landMineCount);
+        updateCellsAt(landMinePositions, new LandMineCell());
+
+        int rowSize = getRowSize();
+        int colSize = getColSize();
         for (int row = 0; row < rowSize; row++) {
             for (int column = 0; column < colSize; column++) {
                 CellPosition cellPosition = CellPosition.of(row, column);
@@ -47,10 +44,20 @@ public class GameBoard {
                 if (count == 0) {
                     continue;
                 }
-                NumberCell numberCell = new NumberCell(count);
-                board[row][column] = numberCell;
+
+                updateCellAt(cellPosition, new NumberCell(count));
             }
         }
+    }
+
+    private void updateCellsAt(List<CellPosition> allPositions, Cell cell) {
+        for (CellPosition position : allPositions) {
+            updateCellAt(position, cell);
+        }
+    }
+
+    private void updateCellAt(CellPosition landMinePosition, Cell cell) {
+        board[landMinePosition.getRowIndex()][landMinePosition.getColIndex()] = cell;
     }
 
     public void flagAt(CellPosition cellPosition) {
@@ -69,9 +76,8 @@ public class GameBoard {
     }
 
     public boolean isAllCellChecked() {
-        return Arrays.stream(board)
-                .flatMap(Arrays::stream)
-                .allMatch(Cell::isChecked);
+        Cells cells = Cells.from(board);
+        return cells.isAllChecked();
     }
 
     public boolean isInvalidCellPosition(CellPosition cellPosition) {
