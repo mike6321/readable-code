@@ -4,28 +4,28 @@ public class BoardIndexConverter {
 
     private static final char BASE_CHAR_FOR_COLUMN = 'a';
 
-    public int getSelectedRowIndex(String cellInput, int rowSize) {
+    public int getSelectedRowIndex(String cellInput) {
         String cellInputRow = cellInput.substring(1);
-        return convertRowFrom(cellInputRow, rowSize);
+        return convertRowFrom(cellInputRow);
     }
 
-    public int getSelectedColumnIndex(String cellInput, int colSize) {
+    public int getSelectedColumnIndex(String cellInput) {
         char cellInputColumn = cellInput.charAt(0);
-        return convertColumnFrom(cellInputColumn, colSize);
+        return convertColumnFrom(cellInputColumn);
     }
 
-    private int convertRowFrom(String cellInputRow, int rowSize) {
+    private int convertRowFrom(String cellInputRow) {
         int rowIndex = Integer.parseInt(cellInputRow) - 1;
-        if (rowIndex < 0 || rowIndex >= rowSize) {
+        if (rowIndex < 0) {
             throw new GameException("잚못된 입력 입니다.");
         }
         return rowIndex;
     }
 
     // 열 선택: cmd + shift + 8
-    private int convertColumnFrom(char cellInputColumn, int colSize) {
+    private int convertColumnFrom(char cellInputColumn) {
         int columnIndex = cellInputColumn - BASE_CHAR_FOR_COLUMN;
-        if (columnIndex < 0 || columnIndex >= colSize) {
+        if (columnIndex < 0) {
             throw new GameException("잘못된 입력 입니다.");
         }
         switch (cellInputColumn) {
