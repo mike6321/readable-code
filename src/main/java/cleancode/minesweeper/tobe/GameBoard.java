@@ -115,9 +115,9 @@ public class GameBoard {
         return board[0].length;
     }
 
-    public String getSign(CellPosition cellPosition) {
+    public CellSnapshot getSnapshot(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
-        return cell.getSign();
+        return cell.getSnapshot();
     }
 
     private Cell findCell(CellPosition cellPosition) {
@@ -149,5 +149,4 @@ public class GameBoard {
     private boolean isOpenedCell(CellPosition cellPosition) {
         return findCell(cellPosition).isOpened();
     }
-
 }

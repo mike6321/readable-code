@@ -2,12 +2,19 @@ package cleancode.minesweeper.tobe.io;
 
 import cleancode.minesweeper.tobe.GameBoard;
 import cleancode.minesweeper.tobe.GameException;
+import cleancode.minesweeper.tobe.cell.CellSnapshot;
+import cleancode.minesweeper.tobe.cell.CellSnapshotStatus;
 import cleancode.minesweeper.tobe.position.CellPosition;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class ConsoleOutputHandler implements OutputHandler {
+
+    private static final String LAND_MINE_SIGN = "☼";
+    private static final String EMPTY_SIGN = "■";
+    private static final String FLAG_SIGN = "⚑";
+    private static final String UNCHECKED_SIGN = "□";
 
     @Override
     public void showGameStartComments() {
@@ -25,11 +32,35 @@ public class ConsoleOutputHandler implements OutputHandler {
             System.out.printf("%2d  ", row + 1);
             for (int column = 0; column < board.getColSize(); column++) {
                 CellPosition cellPosition = CellPosition.of(row, column);
-                System.out.print(board.getSign(cellPosition) + " ");
+
+                CellSnapshot snapshot = board.getSnapshot(cellPosition);
+                String cellSign = decideCellSignFrom(snapshot);
+
+                System.out.print(cellSign + " ");
             }
             System.out.println();
         }
         System.out.println();
+    }
+
+    private String decideCellSignFrom(CellSnapshot snapshot) {
+        CellSnapshotStatus status = snapshot.getCellSnapshotStatus();
+        if (status == CellSnapshotStatus.EMPTY) {
+            return EMPTY_SIGN;
+        }
+        if (status == CellSnapshotStatus.FLAG) {
+            return FLAG_SIGN;
+        }
+        if (status == CellSnapshotStatus.LAND_MINE) {
+            return LAND_MINE_SIGN;
+        }
+        if (status == CellSnapshotStatus.NUMBER) {
+            return String.valueOf(snapshot.getNearbyLandMineCount());
+        }
+        if (status == CellSnapshotStatus.UNCHECKED) {
+            return UNCHECKED_SIGN;
+        }
+        throw new IllegalArgumentException("Unknown cell snapshot status: " + status);
     }
 
     private String  generateColumnAlphabets(GameBoard board) {
