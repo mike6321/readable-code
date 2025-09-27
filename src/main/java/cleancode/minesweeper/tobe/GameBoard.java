@@ -26,33 +26,34 @@ public class GameBoard {
     public void initializeGame() {
         CellPositions cellPositions = CellPositions.from(board);
 
-        List<CellPosition> allPositions = cellPositions.getPositions();
-        updateCellsAt(allPositions, new EmptyCell());
+        initializeEmptyCells(cellPositions);
 
         List<CellPosition> landMinePositions = cellPositions.extractRandomPositions(landMineCount);
-        updateCellsAt(landMinePositions, new LandMineCell());
+        initializeLandMineCells(landMinePositions);
 
-        int rowSize = getRowSize();
-        int colSize = getColSize();
-        for (int row = 0; row < rowSize; row++) {
-            for (int column = 0; column < colSize; column++) {
-                CellPosition cellPosition = CellPosition.of(row, column);
-                if (isLandMineCell(cellPosition)) {
-                    continue;
-                }
-                int count = countNearbyLandMines(cellPosition);
-                if (count == 0) {
-                    continue;
-                }
+        List<CellPosition> numberPositionCandidates = cellPositions.subtract(landMinePositions);
+        initializeNumberCells(numberPositionCandidates);
+    }
 
-                updateCellAt(cellPosition, new NumberCell(count));
-            }
+    private void initializeEmptyCells(CellPositions cellPositions) {
+        List<CellPosition> allPositions = cellPositions.getPositions();
+        for (CellPosition position : allPositions) {
+            updateCellAt(position, new EmptyCell());
         }
     }
 
-    private void updateCellsAt(List<CellPosition> allPositions, Cell cell) {
-        for (CellPosition position : allPositions) {
-            updateCellAt(position, cell);
+    private void initializeLandMineCells(List<CellPosition> landMinePositions) {
+        for (CellPosition position : landMinePositions) {
+            updateCellAt(position, new LandMineCell());
+        }
+    }
+
+    private void initializeNumberCells(List<CellPosition> numberPositionCandidates) {
+        for (CellPosition positionCandidate : numberPositionCandidates) {
+            int count = countNearbyLandMines(positionCandidate);
+            if (count != 0) {
+                updateCellAt(positionCandidate, new NumberCell(count));
+            }
         }
     }
 

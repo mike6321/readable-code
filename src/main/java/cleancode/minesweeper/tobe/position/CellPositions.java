@@ -32,10 +32,24 @@ public class CellPositions {
     }
 
     public List<CellPosition> extractRandomPositions(int count) {
-        ArrayList<CellPosition> cellPositions = new ArrayList<>(positions);
+        List<CellPosition> cellPositions = new ArrayList<>(positions);
         Collections.shuffle(cellPositions);
 
         return cellPositions.subList(0, count);
+    }
+
+    public List<CellPosition> subtract(List<CellPosition> positionListToSubtract) {
+        List<CellPosition> cellPositions = new ArrayList<>(this.positions);
+
+        CellPositions positionToSubtract = CellPositions.of(positionListToSubtract);
+
+        return cellPositions.stream()
+                .filter(positionToSubtract::doesNotContain)
+                .toList();
+    }
+
+    private boolean doesNotContain(CellPosition position) {
+        return !positions.contains(position);
     }
 
     public List<CellPosition> getPositions() {
