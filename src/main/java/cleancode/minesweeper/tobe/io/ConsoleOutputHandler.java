@@ -3,8 +3,7 @@ package cleancode.minesweeper.tobe.io;
 import cleancode.minesweeper.tobe.GameBoard;
 import cleancode.minesweeper.tobe.GameException;
 import cleancode.minesweeper.tobe.cell.CellSnapshot;
-import cleancode.minesweeper.tobe.cell.CellSnapshotStatus;
-import cleancode.minesweeper.tobe.io.sign.*;
+import cleancode.minesweeper.tobe.io.sign.CellSignFinder;
 import cleancode.minesweeper.tobe.position.CellPosition;
 
 import java.util.List;
@@ -12,10 +11,7 @@ import java.util.stream.IntStream;
 
 public class ConsoleOutputHandler implements OutputHandler {
 
-    private static final String LAND_MINE_SIGN = "☼";
-    private static final String EMPTY_SIGN = "■";
-    private static final String FLAG_SIGN = "⚑";
-    private static final String UNCHECKED_SIGN = "□";
+    public static final CellSignFinder CELL_SIGN_FINDER = new CellSignFinder();
 
     @Override
     public void showGameStartComments() {
@@ -35,7 +31,7 @@ public class ConsoleOutputHandler implements OutputHandler {
                 CellPosition cellPosition = CellPosition.of(row, column);
 
                 CellSnapshot snapshot = board.getSnapshot(cellPosition);
-                String cellSign = decideCellSignFrom(snapshot);
+                String cellSign = CELL_SIGN_FINDER.findCellSignFrom(snapshot);
 
                 System.out.print(cellSign + " ");
             }
@@ -44,32 +40,13 @@ public class ConsoleOutputHandler implements OutputHandler {
         System.out.println();
     }
 
-    private String decideCellSignFrom(CellSnapshot snapshot) {
-        CellSnapshotStatus status = snapshot.getCellSnapshotStatus();
-
-        List<CellSignProvidable> cellSignProviders = List.of(
-                new EmptyCellSignProvider(),
-                new FlagCellSignProvider(),
-                new NumberCellSignProvider(),
-                new LandMineCellSignProvider(),
-                new UncheckedCellSignProvider()
-        );
-
-        return cellSignProviders.stream().filter(
-                        provider -> provider.supports(snapshot)
-                ).findFirst()
-                .map(provider -> provider.provide(snapshot))
-                .orElseThrow(() -> new IllegalArgumentException("Unknown cell snapshot status: " + status));
-    }
-
     private String  generateColumnAlphabets(GameBoard board) {
         List<String> alphabets = IntStream.range(0, board.getColSize())
                 .mapToObj(index -> (char) ('a' + index))
                 .map(String::valueOf)
                 .toList();
 
-        String joiningAlphabets = String.join(" ", alphabets);
-        return joiningAlphabets;
+        return String.join(" ", alphabets);
     }
 
     @Override
