@@ -4,6 +4,7 @@ import cleancode.minesweeper.tobe.GameBoard;
 import cleancode.minesweeper.tobe.GameException;
 import cleancode.minesweeper.tobe.cell.CellSnapshot;
 import cleancode.minesweeper.tobe.cell.CellSnapshotStatus;
+import cleancode.minesweeper.tobe.io.sign.*;
 import cleancode.minesweeper.tobe.position.CellPosition;
 
 import java.util.List;
@@ -45,22 +46,20 @@ public class ConsoleOutputHandler implements OutputHandler {
 
     private String decideCellSignFrom(CellSnapshot snapshot) {
         CellSnapshotStatus status = snapshot.getCellSnapshotStatus();
-        if (status == CellSnapshotStatus.EMPTY) {
-            return EMPTY_SIGN;
-        }
-        if (status == CellSnapshotStatus.FLAG) {
-            return FLAG_SIGN;
-        }
-        if (status == CellSnapshotStatus.LAND_MINE) {
-            return LAND_MINE_SIGN;
-        }
-        if (status == CellSnapshotStatus.NUMBER) {
-            return String.valueOf(snapshot.getNearbyLandMineCount());
-        }
-        if (status == CellSnapshotStatus.UNCHECKED) {
-            return UNCHECKED_SIGN;
-        }
-        throw new IllegalArgumentException("Unknown cell snapshot status: " + status);
+
+        List<CellSignProvidable> cellSignProviders = List.of(
+                new EmptyCellSignProvider(),
+                new FlagCellSignProvider(),
+                new NumberCellSignProvider(),
+                new LandMineCellSignProvider(),
+                new UncheckedCellSignProvider()
+        );
+
+        return cellSignProviders.stream().filter(
+                        provider -> provider.supports(snapshot)
+                ).findFirst()
+                .map(provider -> provider.provide(snapshot))
+                .orElseThrow(() -> new IllegalArgumentException("Unknown cell snapshot status: " + status));
     }
 
     private String  generateColumnAlphabets(GameBoard board) {

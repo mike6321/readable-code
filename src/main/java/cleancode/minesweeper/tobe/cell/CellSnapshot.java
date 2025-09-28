@@ -10,6 +10,10 @@ public class CellSnapshot {
         this.nearbyLandMineCount = nearbyLandMineCount;
     }
 
+    public boolean isSameStatus(CellSnapshotStatus cellSnapshotStatus) {
+        return this.cellSnapshotStatus == cellSnapshotStatus;
+    }
+
     public static CellSnapshot of(CellSnapshotStatus status, int nearbyLandMineCount) {
         return new CellSnapshot(status, nearbyLandMineCount);
     }
