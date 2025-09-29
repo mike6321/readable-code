@@ -6,14 +6,13 @@ import cleancode.minesweeper.tobe.position.CellPosition;
 import cleancode.minesweeper.tobe.position.CellPositions;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class GameBoard {
 
     private final Cell[][] board;
     private final int landMineCount;
+    private GameStatus gameStatus;
 
     public GameBoard(GameLevel gameLevel) {
         int colSize = gameLevel.getColSize();
@@ -21,9 +20,11 @@ public class GameBoard {
         this.board = new Cell[rowSize][colSize];
 
         this.landMineCount = gameLevel.getLandMineCount();
+        initializeGameStatus();
     }
 
     public void initializeGame() {
+        initializeGameStatus();
         CellPositions cellPositions = CellPositions.from(board);
 
         initializeEmptyCells(cellPositions);
@@ -33,6 +34,10 @@ public class GameBoard {
 
         List<CellPosition> numberPositionCandidates = cellPositions.subtract(landMinePositions);
         initializeNumberCells(numberPositionCandidates);
+    }
+
+    private void initializeGameStatus() {
+        this.gameStatus = GameStatus.IN_PROGRESS;
     }
 
     private void initializeEmptyCells(CellPositions cellPositions) {
@@ -64,9 +69,11 @@ public class GameBoard {
     public void flagAt(CellPosition cellPosition) {
         Cell cell = this.findCell(cellPosition);
         cell.flag();
+
+        checkGameIsOver();
     }
 
-    public void openedAt(CellPosition cellPosition) {
+    public void openOneCellAt(CellPosition cellPosition) {
         Cell cell = this.findCell(cellPosition);
         cell.opened();
     }
@@ -132,7 +139,7 @@ public class GameBoard {
             return;
         }
 
-        openedAt(cellPosition);
+        openOneCellAt(cellPosition);
 
         if (doesCellHaveLandMineCount(cellPosition)) {
             return;
@@ -149,4 +156,42 @@ public class GameBoard {
     private boolean isOpenedCell(CellPosition cellPosition) {
         return findCell(cellPosition).isOpened();
     }
+
+    public boolean isInProgress() {
+        return gameStatus == GameStatus.IN_PROGRESS;
+    }
+
+    private void checkGameIsOver() {
+        if (isAllCellChecked()) {
+            changeGameStatusToWin();
+        }
+    }
+
+    private void changeGameStatusToWin() {
+        this.gameStatus = GameStatus.WIN;
+    }
+
+    public void openAt(CellPosition cellPosition) {
+        if (isLandMineCell(cellPosition)) {
+            openOneCellAt(cellPosition);
+            changeGameStatusToLose();
+            return;
+        }
+
+        openSurroundedCells(cellPosition);
+        checkGameIsOver();
+    }
+
+    private void changeGameStatusToLose() {
+        this.gameStatus = GameStatus.LOSE;
+    }
+
+    public boolean isWinStatus() {
+        return gameStatus == GameStatus.WIN;
+    }
+
+    public boolean isLoseStatus() {
+        return gameStatus == GameStatus.LOSE;
+    }
+    
 }
