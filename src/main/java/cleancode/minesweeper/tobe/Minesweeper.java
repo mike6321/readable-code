@@ -1,7 +1,6 @@
 package cleancode.minesweeper.tobe;
 
 import cleancode.minesweeper.tobe.config.GameConfig;
-import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.io.InputHandler;
 import cleancode.minesweeper.tobe.io.OutputHandler;
 import cleancode.minesweeper.tobe.position.CellPosition;
@@ -11,21 +10,21 @@ public class Minesweeper implements GameInitializable, GameRunnable {
 
     // 상수추출: option + command + c
     private final GameBoard gameBoard;
-    private final BoardIndexConverter boardIndexConverter = new BoardIndexConverter();
     private final InputHandler inputHandler;
     private final OutputHandler outputHandler;
-
-    private int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
+    private GameStatus gameStatus;
 
     public Minesweeper(GameConfig gameConfig) {
         this.gameBoard = new GameBoard(gameConfig.getGameLevel());
         this.inputHandler = gameConfig.getInputHandler();
         this.outputHandler = gameConfig.getOutputHandler();
+        this.gameStatus = GameStatus.IN_PROGRESS;
     }
 
     @Override
     public void initialize() {
         gameBoard.initializeGame();
+        gameStatus = GameStatus.IN_PROGRESS;
     }
 
     @Override
@@ -80,7 +79,7 @@ public class Minesweeper implements GameInitializable, GameRunnable {
     }
 
     private void changeGameStatusToLose() {
-        gameStatus = -1;
+        this.gameStatus = GameStatus.LOSE;
     }
 
     private boolean doesUserChooseToOpenCell(UserAction userAction) {
@@ -107,11 +106,11 @@ public class Minesweeper implements GameInitializable, GameRunnable {
     }
 
     private boolean doesUserLoseTheGame() {
-        return gameStatus == -1;
+        return gameStatus == GameStatus.LOSE;
     }
 
     private boolean doesUserWinTheGame() {
-        return gameStatus == 1;
+        return gameStatus == GameStatus.WIN;
     }
 
     private void checkGameIsOver() {
@@ -121,7 +120,7 @@ public class Minesweeper implements GameInitializable, GameRunnable {
     }
 
     private void changeGameStatusToWin() {
-        gameStatus = 1;
+        this.gameStatus = GameStatus.WIN;
     }
 
 }
