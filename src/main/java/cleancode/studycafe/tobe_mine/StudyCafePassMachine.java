@@ -30,19 +30,8 @@ public class StudyCafePassMachine {
             outputHandler.showPassListForSelection(passCandidates);
             StudyCafePass selectedPass = inputHandler.getSelectPass(passCandidates);
 
-            if (studyCafePassType == StudyCafePassType.HOURLY) {
-                outputHandler.showPassOrderSummary(selectedPass, null);
-            } else if (studyCafePassType == StudyCafePassType.WEEKLY) {
-                outputHandler.showPassOrderSummary(selectedPass, null);
-            } else if (studyCafePassType == StudyCafePassType.FIXED) {
-                StudyCafeLockerPass lockerPass = selectLockerPass( selectedPass);
-
-                if (lockerPass != null) {
-                    outputHandler.showPassOrderSummary(selectedPass, lockerPass);
-                } else {
-                    outputHandler.showPassOrderSummary(selectedPass, null);
-                }
-            }
+            StudyCafeLockerPass lockerPass = selectLockerPass( selectedPass);
+            outputHandler.showPassOrderSummary(selectedPass, lockerPass);
         } catch (AppException e) {
             outputHandler.showSimpleMessage(e.getMessage());
         } catch (Exception e) {
@@ -51,6 +40,10 @@ public class StudyCafePassMachine {
     }
 
     private StudyCafeLockerPass selectLockerPass(StudyCafePass selectedPass) {
+        if (selectedPass.getPassType() != StudyCafePassType.FIXED) {
+            return null;
+        }
+
         List<StudyCafeLockerPass> lockerPasses = studyCafeFileHandler.readLockerPasses();
 
         StudyCafeLockerPass lockerPassCandidate = lockerPasses.stream()
