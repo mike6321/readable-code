@@ -18,6 +18,10 @@ public class StudyCafePass {
         return new StudyCafePass(passType, duration, price, discountRate);
     }
 
+    public boolean isSamePassType(StudyCafePassType studyCafePassType) {
+        return this.passType == studyCafePassType;
+    }
+
     public StudyCafePassType getPassType() {
         return passType;
     }
@@ -47,4 +51,8 @@ public class StudyCafePass {
         return "";
     }
 
+    public boolean isSameDurationType(StudyCafeLockerPass lockerPass) {
+        return lockerPass.isSamePassType(this.passType) &&
+                lockerPass.isSameDuration(this.duration);
+    }
 }
