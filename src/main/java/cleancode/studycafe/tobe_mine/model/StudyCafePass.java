@@ -1,5 +1,7 @@
 package cleancode.studycafe.tobe_mine.model;
 
+import java.util.Set;
+
 public class StudyCafePass {
 
     private final StudyCafePassType passType;
@@ -54,5 +56,9 @@ public class StudyCafePass {
     public boolean isSameDurationType(StudyCafeLockerPass lockerPass) {
         return lockerPass.isSamePassType(this.passType) &&
                 lockerPass.isSameDuration(this.duration);
+    }
+
+    public boolean cannotUseLocker() {
+        return !this.passType.isNotLockerType();
     }
 }
