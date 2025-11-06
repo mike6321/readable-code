@@ -6,6 +6,7 @@ import cleancode.studycafe.tobe_mine.io.StudyCafeIOHandler;
 import cleancode.studycafe.tobe_mine.model.StudyCafeLockerPass;
 import cleancode.studycafe.tobe_mine.model.StudyCafePass;
 import cleancode.studycafe.tobe_mine.model.StudyCafePassType;
+import cleancode.studycafe.tobe_mine.model.StudyCafePasses;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,10 +43,8 @@ public class StudyCafePassMachine {
     }
 
     private List<StudyCafePass> findPassCandidateBy(StudyCafePassType studyCafePassType) {
-        List<StudyCafePass> studyCafePasses = studyCafeFileHandler.readStudyCafePasses();
-        return studyCafePasses.stream()
-                .filter(studyCafePass -> studyCafePass.isSamePassType(studyCafePassType))
-                .toList();
+        StudyCafePasses studyCafePasses = studyCafeFileHandler.readStudyCafePasses();
+        return studyCafePasses.findPassBy(studyCafePassType);
     }
 
     private Optional<StudyCafeLockerPass> selectLockerPass(StudyCafePass selectedPass) {
