@@ -61,10 +61,10 @@ public class MinesweeperGame {
         }
         while (true) {
             System.out.println("   a b c d e f g h i j");
-            for (int i = 0; i < 8; i++) {
-                System.out.printf("%d  ", i + 1);
-                for (int j = 0; j < 10; j++) {
-                    System.out.print(board[i][j] + " ");
+            for (int row = 0; row < 8; row++) {
+                System.out.printf("%d  ", row + 1);
+                for (int col = 0; col < 10; col++) {
+                    System.out.print(board[row][col] + " ");
                 }
                 System.out.println();
             }
