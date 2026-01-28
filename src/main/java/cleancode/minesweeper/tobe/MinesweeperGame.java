@@ -122,15 +122,15 @@ public class MinesweeperGame {
             int selectedRowIndex = Character.getNumericValue(cellInputRow) - 1;
             if (userActionInput.equals("2")) {
                 board[selectedRowIndex][selectedColumnIndex] = "⚑";
-                boolean open = true;
+                boolean isAllOpened = true;
                 for (int row = 0; row < 8; row++) {
                     for (int col = 0; col < 10; col++) {
                         if (board[row][col].equals("□")) {
-                            open = false;
+                            isAllOpened = false;
                         }
                     }
                 }
-                if (open) {
+                if (isAllOpened) {
                     gameStatus = 1;
                 }
             } else if (userActionInput.equals("1")) {
@@ -141,15 +141,15 @@ public class MinesweeperGame {
                 } else {
                     open(selectedRowIndex, selectedColumnIndex);
                 }
-                boolean open = true;
+                boolean isAllOpened = true;
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 10; j++) {
                         if (board[i][j].equals("□")) {
-                            open = false;
+                            isAllOpened = false;
                         }
                     }
                 }
-                if (open) {
+                if (isAllOpened) {
                     gameStatus = 1;
                 }
             } else {
