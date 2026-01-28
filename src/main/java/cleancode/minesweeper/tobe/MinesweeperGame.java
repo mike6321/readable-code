@@ -142,9 +142,9 @@ public class MinesweeperGame {
                     open(selectedRowIndex, selectedColumnIndex);
                 }
                 boolean isAllOpened = true;
-                for (int i = 0; i < 8; i++) {
-                    for (int j = 0; j < 10; j++) {
-                        if (board[i][j].equals("□")) {
+                for (int row = 0; row < 8; row++) {
+                    for (int col = 0; col < 10; col++) {
+                        if (board[row][col].equals("□")) {
                             isAllOpened = false;
                         }
                     }
