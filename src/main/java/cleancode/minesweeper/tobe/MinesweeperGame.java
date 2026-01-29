@@ -52,13 +52,13 @@ public class MinesweeperGame {
     }
 
     private static void checkIfGameOver() {
-        boolean isAllOpened = checkIfAllCellIsOpened();
+        boolean isAllOpened = isAllCellOpened();
         if (isAllOpened) {
             gameStatus = 1;
         }
     }
 
-    private static boolean checkIfAllCellIsOpened() {
+    private static boolean isAllCellOpened() {
         boolean isAllOpened = true;
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 10; col++) {
