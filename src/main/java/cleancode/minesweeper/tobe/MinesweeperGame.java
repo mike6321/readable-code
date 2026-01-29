@@ -52,6 +52,13 @@ public class MinesweeperGame {
     }
 
     private static void checkIfAllCellIsOpened() {
+        boolean isAllOpened = isAllOpened();
+        if (isAllOpened) {
+            gameStatus = 1;
+        }
+    }
+ 
+    private static boolean isAllOpened() {
         boolean isAllOpened = true;
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 10; col++) {
@@ -60,9 +67,7 @@ public class MinesweeperGame {
                 }
             }
         }
-        if (isAllOpened) {
-            gameStatus = 1;
-        }
+        return isAllOpened;
     }
 
     private static int convertRowFrom(char cellInputRow) {
