@@ -32,7 +32,7 @@ public class MinesweeperGame {
             char cellInputColumn = cellInput.charAt(0);
             char cellInputRow = cellInput.charAt(1);
             int selectedColumnIndex = convertColumnFrom(cellInputColumn);
-            int selectedRowIndex = Character.getNumericValue(cellInputRow) - 1;
+            int selectedRowIndex = convertRowFrom(cellInputRow);
             if (userActionInput.equals("2")) {
                 board[selectedRowIndex][selectedColumnIndex] = "⚑";
                 boolean isAllOpened = true;
@@ -69,6 +69,11 @@ public class MinesweeperGame {
                 System.out.println("잘못된 번호를 선택하셨습니다.");
             }
         }
+    }
+
+    private static int convertRowFrom(char cellInputRow) {
+        int selectedRowIndex = Character.getNumericValue(cellInputRow) - 1;
+        return selectedRowIndex;
     }
 
     private static int convertColumnFrom(char cellInputColumn) {
