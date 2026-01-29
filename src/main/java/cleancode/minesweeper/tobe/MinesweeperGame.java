@@ -35,17 +35,7 @@ public class MinesweeperGame {
             int selectedRowIndex = convertRowFrom(cellInputRow);
             if (userActionInput.equals("2")) {
                 board[selectedRowIndex][selectedColumnIndex] = "⚑";
-                boolean isAllOpened = true;
-                for (int row = 0; row < 8; row++) {
-                    for (int col = 0; col < 10; col++) {
-                        if (board[row][col].equals("□")) {
-                            isAllOpened = false;
-                        }
-                    }
-                }
-                if (isAllOpened) {
-                    gameStatus = 1;
-                }
+                checkIfAllCellIsOpened();
             } else if (userActionInput.equals("1")) {
                 if (landMines[selectedRowIndex][selectedColumnIndex]) {
                     board[selectedRowIndex][selectedColumnIndex] = "☼";
@@ -54,20 +44,24 @@ public class MinesweeperGame {
                 } else {
                     open(selectedRowIndex, selectedColumnIndex);
                 }
-                boolean isAllOpened = true;
-                for (int row = 0; row < 8; row++) {
-                    for (int col = 0; col < 10; col++) {
-                        if (board[row][col].equals("□")) {
-                            isAllOpened = false;
-                        }
-                    }
-                }
-                if (isAllOpened) {
-                    gameStatus = 1;
-                }
+                checkIfAllCellIsOpened();
             } else {
                 System.out.println("잘못된 번호를 선택하셨습니다.");
             }
+        }
+    }
+
+    private static void checkIfAllCellIsOpened() {
+        boolean isAllOpened = true;
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 10; col++) {
+                if (board[row][col].equals("□")) {
+                    isAllOpened = false;
+                }
+            }
+        }
+        if (isAllOpened) {
+            gameStatus = 1;
         }
     }
 
