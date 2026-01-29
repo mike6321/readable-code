@@ -77,43 +77,19 @@ public class MinesweeperGame {
     }
 
     private static int convertColumnFrom(char cellInputColumn) {
-        int selectedColumnIndex;
-        switch (cellInputColumn) {
-            case 'a':
-                selectedColumnIndex = 0;
-                break;
-            case 'b':
-                selectedColumnIndex = 1;
-                break;
-            case 'c':
-                selectedColumnIndex = 2;
-                break;
-            case 'd':
-                selectedColumnIndex = 3;
-                break;
-            case 'e':
-                selectedColumnIndex = 4;
-                break;
-            case 'f':
-                selectedColumnIndex = 5;
-                break;
-            case 'g':
-                selectedColumnIndex = 6;
-                break;
-            case 'h':
-                selectedColumnIndex = 7;
-                break;
-            case 'i':
-                selectedColumnIndex = 8;
-                break;
-            case 'j':
-                selectedColumnIndex = 9;
-                break;
-            default:
-                selectedColumnIndex = -1;
-                break;
-        }
-        return selectedColumnIndex;
+        return switch (cellInputColumn) {
+            case 'a' -> 0;
+            case 'b' -> 1;
+            case 'c' -> 2;
+            case 'd' -> 3;
+            case 'e' -> 4;
+            case 'f' -> 5;
+            case 'g' -> 6;
+            case 'h' -> 7;
+            case 'i' -> 8;
+            case 'j' -> 9;
+            default -> -1;
+        };
     }
 
     private static void showBoard() {
