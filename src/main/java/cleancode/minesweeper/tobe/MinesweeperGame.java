@@ -31,42 +31,7 @@ public class MinesweeperGame {
             String userActionInput = scanner.nextLine();
             char cellInputColumn = cellInput.charAt(0);
             char cellInputRow = cellInput.charAt(1);
-            int selectedColumnIndex;
-            switch (cellInputColumn) {
-                case 'a':
-                    selectedColumnIndex = 0;
-                    break;
-                case 'b':
-                    selectedColumnIndex = 1;
-                    break;
-                case 'c':
-                    selectedColumnIndex = 2;
-                    break;
-                case 'd':
-                    selectedColumnIndex = 3;
-                    break;
-                case 'e':
-                    selectedColumnIndex = 4;
-                    break;
-                case 'f':
-                    selectedColumnIndex = 5;
-                    break;
-                case 'g':
-                    selectedColumnIndex = 6;
-                    break;
-                case 'h':
-                    selectedColumnIndex = 7;
-                    break;
-                case 'i':
-                    selectedColumnIndex = 8;
-                    break;
-                case 'j':
-                    selectedColumnIndex = 9;
-                    break;
-                default:
-                    selectedColumnIndex = -1;
-                    break;
-            }
+            int selectedColumnIndex = convertColumnFrom(cellInputColumn);
             int selectedRowIndex = Character.getNumericValue(cellInputRow) - 1;
             if (userActionInput.equals("2")) {
                 board[selectedRowIndex][selectedColumnIndex] = "⚑";
@@ -104,6 +69,46 @@ public class MinesweeperGame {
                 System.out.println("잘못된 번호를 선택하셨습니다.");
             }
         }
+    }
+
+    private static int convertColumnFrom(char cellInputColumn) {
+        int selectedColumnIndex;
+        switch (cellInputColumn) {
+            case 'a':
+                selectedColumnIndex = 0;
+                break;
+            case 'b':
+                selectedColumnIndex = 1;
+                break;
+            case 'c':
+                selectedColumnIndex = 2;
+                break;
+            case 'd':
+                selectedColumnIndex = 3;
+                break;
+            case 'e':
+                selectedColumnIndex = 4;
+                break;
+            case 'f':
+                selectedColumnIndex = 5;
+                break;
+            case 'g':
+                selectedColumnIndex = 6;
+                break;
+            case 'h':
+                selectedColumnIndex = 7;
+                break;
+            case 'i':
+                selectedColumnIndex = 8;
+                break;
+            case 'j':
+                selectedColumnIndex = 9;
+                break;
+            default:
+                selectedColumnIndex = -1;
+                break;
+        }
+        return selectedColumnIndex;
     }
 
     private static void showBoard() {
