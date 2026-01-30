@@ -28,10 +28,10 @@ public class MinesweeperGame {
             String userActionInput = getUserActionInputFromUser(scanner);
             int selectedColumnIndex = getSelectedColumnIndex(cellInput);
             int selectedRowIndex = getSelectedRowIndex(cellInput);
-            if (userActionInput.equals("2")) {
+            if (doesUserChooseToPlantFlag(userActionInput)) {
                 board[selectedRowIndex][selectedColumnIndex] = "⚑";
                 checkIfGameOver();
-            } else if (userActionInput.equals("1")) {
+            } else if (doesUserChooseToOpenCell(userActionInput)) {
                 if (landMines[selectedRowIndex][selectedColumnIndex]) {
                     board[selectedRowIndex][selectedColumnIndex] = "☼";
                     gameStatus = -1;
@@ -44,6 +44,14 @@ public class MinesweeperGame {
                 System.out.println("잘못된 번호를 선택하셨습니다.");
             }
         }
+    }
+
+    private static boolean doesUserChooseToOpenCell(String userActionInput) {
+        return userActionInput.equals("1");
+    }
+
+    private static boolean doesUserChooseToPlantFlag(String userActionInput) {
+        return userActionInput.equals("2");
     }
 
     private static int getSelectedRowIndex(String cellInput) {
