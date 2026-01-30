@@ -24,11 +24,8 @@ public class MinesweeperGame {
                 System.out.println("지뢰를 밟았습니다. GAME OVER!");
                 break;
             }
-            System.out.println();
-            System.out.println("선택할 좌표를 입력하세요. (예: a1)");
-            String cellInput = scanner.nextLine();
-            System.out.println("선택한 셀에 대한 행위를 선택하세요. (1: 오픈, 2: 깃발 꽂기)");
-            String userActionInput = scanner.nextLine();
+            String cellInput = getCellInputFromUser(scanner);
+            String userActionInput = getUserActionInputFromUser(scanner);
             char cellInputColumn = cellInput.charAt(0);
             char cellInputRow = cellInput.charAt(1);
             int selectedColumnIndex = convertColumnFrom(cellInputColumn);
@@ -49,6 +46,18 @@ public class MinesweeperGame {
                 System.out.println("잘못된 번호를 선택하셨습니다.");
             }
         }
+    }
+
+    private static String getUserActionInputFromUser(Scanner scanner) {
+        System.out.println("선택한 셀에 대한 행위를 선택하세요. (1: 오픈, 2: 깃발 꽂기)");
+        String userActionInput = scanner.nextLine();
+        return userActionInput;
+    }
+
+    private static String getCellInputFromUser(Scanner scanner) {
+        System.out.println();
+        System.out.println("선택할 좌표를 입력하세요. (예: a1)");
+        return scanner.nextLine();
     }
 
     private static boolean doesUserLoseTheGame() {
