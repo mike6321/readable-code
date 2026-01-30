@@ -26,10 +26,8 @@ public class MinesweeperGame {
             }
             String cellInput = getCellInputFromUser(scanner);
             String userActionInput = getUserActionInputFromUser(scanner);
-            char cellInputColumn = cellInput.charAt(0);
-            char cellInputRow = cellInput.charAt(1);
-            int selectedColumnIndex = convertColumnFrom(cellInputColumn);
-            int selectedRowIndex = convertRowFrom(cellInputRow);
+            int selectedColumnIndex = getSelectedColumnIndex(cellInput);
+            int selectedRowIndex = getSelectedRowIndex(cellInput);
             if (userActionInput.equals("2")) {
                 board[selectedRowIndex][selectedColumnIndex] = "⚑";
                 checkIfGameOver();
@@ -46,6 +44,16 @@ public class MinesweeperGame {
                 System.out.println("잘못된 번호를 선택하셨습니다.");
             }
         }
+    }
+
+    private static int getSelectedRowIndex(String cellInput) {
+        char cellInputRow = cellInput.charAt(1);
+        return convertRowFrom(cellInputRow);
+    }
+
+    private static int getSelectedColumnIndex(String cellInput) {
+        char cellInputColumn = cellInput.charAt(0);
+        return convertColumnFrom(cellInputColumn);
     }
 
     private static String getUserActionInputFromUser(Scanner scanner) {
