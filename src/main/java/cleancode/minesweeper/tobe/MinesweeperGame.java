@@ -24,7 +24,6 @@ public class MinesweeperGame {
 
     public static void main(String[] args) {
         showGameStartComments();
-        Scanner scanner = new Scanner(System.in);
         initializeGame();
         while (true) {
             showBoard();
@@ -36,6 +35,7 @@ public class MinesweeperGame {
                 System.out.println("지뢰를 밟았습니다. GAME OVER!");
                 break;
             }
+            Scanner scanner = new Scanner(System.in);
             String cellInput = getCellInputFromUser(scanner);
             String userActionInput = getUserActionInputFromUser(scanner);
             actOnCell(cellInput, userActionInput);
