@@ -178,12 +178,12 @@ public class MinesweeperGame {
 
         for (int row = 0; row < BOARD_ROW_SIZE; row++) {
             for (int col = 0; col < BOARD_COLUMN_SIZE; col++) {
-                if (!isLandMineCell(row, col)) {
-                    int count = countNearbyLandMins(row, col);
-                    NEARBY_LAND_MINE_COUNTS[row][col] = count;
+                if (isLandMineCell(row, col)) {
+                    NEARBY_LAND_MINE_COUNTS[row][col] = 0;
                     continue;
                 }
-                NEARBY_LAND_MINE_COUNTS[row][col] = 0;
+                int count = countNearbyLandMins(row, col);
+                NEARBY_LAND_MINE_COUNTS[row][col] = count;
             }
         }
     }
