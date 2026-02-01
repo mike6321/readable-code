@@ -1,5 +1,6 @@
 package cleancode.minesweeper.optional;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,6 +19,8 @@ public class OptionalExercise {
 
     public static void main(String[] args) {
         practiceOrElseVsOrElseGet();
+        practiceIfPresentOrElse();
+        practiceOfVsOfNullable();
     }
 
     private static void practiceOrElseVsOrElseGet() {
@@ -42,5 +45,45 @@ public class OptionalExercise {
     private static String expensiveFallback(AtomicInteger counter) {
         counter.incrementAndGet();
         return "fallback";
+    }
+
+    private static void practiceIfPresentOrElse() {
+        Optional<String> present = Optional.of("value");
+        Optional<String> empty = Optional.empty();
+
+        present.ifPresentOrElse(
+                v -> System.out.println("[present] " + v),
+                () -> System.out.println("[present] empty")
+        );
+
+        empty.ifPresentOrElse(
+                v -> System.out.println("[empty] " + v),
+                () -> System.out.println("[empty] empty")
+        );
+    }
+
+    private static void practiceOfVsOfNullable() {
+        String nonNull = "value";
+        String nullable = null;
+
+        // null 불가
+        Optional<String> fromOf = Optional.of(nonNull);
+        // null 가능
+        Optional<String> fromOfNullable = Optional.ofNullable(nullable);
+
+        System.out.println("fromOf=" + fromOf);
+        System.out.println("fromOfNullable=" + fromOfNullable);
+
+        try {
+            System.out.println(fromOfNullable.get());
+        } catch (NoSuchElementException e) {
+            System.out.println("ofNullable get NoSuchElementException");
+        }
+
+        try {
+            Optional.of(nullable);
+        } catch (NullPointerException e) {
+            System.out.println("Optional.of(null) throws NPE");
+        }
     }
 }
