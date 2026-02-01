@@ -136,8 +136,11 @@ public class MinesweeperGame {
     }
 
     private static int convertRowFrom(char cellInputRow) {
-        int selectedRowIndex = Character.getNumericValue(cellInputRow) - 1;
-        return selectedRowIndex;
+        int rowIndex = Character.getNumericValue(cellInputRow) - 1;
+        if (rowIndex > BOARD_ROW_SIZE) {
+            throw new IllegalArgumentException("잘못된 입력입니다.");
+        }
+        return rowIndex;
     }
 
     private static int convertColumnFrom(char cellInputColumn) {
