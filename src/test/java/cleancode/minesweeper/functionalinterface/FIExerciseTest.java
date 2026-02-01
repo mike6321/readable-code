@@ -6,10 +6,14 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,6 +81,52 @@ class FIExerciseTest {
         String result = null;
 
         assertThat(result).isEqualTo("MINESWEEPER!");
+    }
+
+    @Disabled("Practice: remove @Disabled and implement TODOs")
+    @Test
+    void practice_unary_binary_operator() {
+        // TODO: UnaryOperator should uppercase the input.
+        // TODO: BinaryOperator should choose the longer string.
+        UnaryOperator<String> upper = null;
+        BinaryOperator<String> longer = null;
+
+        String result1 = upper.apply("mine");
+        String result2 = longer.apply("code", "clean");
+
+        assertThat(result1).isEqualTo("MINE");
+        assertThat(result2).isEqualTo("clean");
+    }
+
+    @Disabled("Practice: remove @Disabled and implement TODOs")
+    @Test
+    void practice_bipredicate_biconsumer() {
+        // TODO: BiPredicate should check if length >= minLength.
+        // TODO: BiConsumer should add "value:flag" to list.
+        BiPredicate<String, Integer> lengthAtLeast = null;
+        BiConsumer<String, Boolean> appendWithFlag = null;
+
+        List<String> results = new ArrayList<>();
+        appendWithFlag = (value, flag) -> results.add(value + ":" + flag);
+
+        assertThat(lengthAtLeast.test("mine", 4)).isTrue();
+        appendWithFlag.accept("mine", true);
+
+        assertThat(results).containsExactly("mine:true");
+    }
+
+    @Disabled("Practice: remove @Disabled and implement TODOs")
+    @Test
+    void practice_compose_vs_andThen() {
+        // TODO: compose should run before trim; andThen should run after trim.
+        Function<String, String> trim = null;
+        Function<String, String> wrap = null;
+
+        String composed = trim.compose(wrap).apply(" code ");
+        String chained = trim.andThen(wrap).apply(" code ");
+
+        assertThat(composed).isEqualTo("[ code ]");
+        assertThat(chained).isEqualTo("[code]");
     }
 
     @FunctionalInterface
