@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 public class FIExercise {
 
@@ -17,6 +21,9 @@ public class FIExercise {
         practiceBuiltInInterfaces();
         practiceComposeAndChain();
         practiceCallbacks();
+        practiceUnaryBinaryOperator();
+        practiceBiPredicateBiConsumer();
+        practiceComposeVsAndThen();
     }
 
     private static void practiceCustomFunctionalInterface() {
@@ -68,6 +75,34 @@ public class FIExercise {
         saveIfValid("x", value -> results.add("saved:" + value), value -> value.length() >= 4);
 
         System.out.println("[callback] results=" + results);
+    }
+
+    private static void practiceUnaryBinaryOperator() {
+        UnaryOperator<String> upper = s -> s.toUpperCase(Locale.ROOT);
+        BinaryOperator<String> longer = (a, b) -> a.length() >= b.length() ? a : b;
+
+        System.out.println("[unary] " + upper.apply("mine"));
+        System.out.println("[binary] " + longer.apply("code", "clean"));
+    }
+
+    private static void practiceBiPredicateBiConsumer() {
+        BiPredicate<String, Integer> lengthAtLeast = (value, min) -> value.length() >= min;
+        BiConsumer<String, Boolean> appendWithFlag = (value, flag) ->
+                System.out.println("[biconsumer] " + value + ":" + flag);
+
+        System.out.println("[bipredicate] " + lengthAtLeast.test("mine", 4));
+        appendWithFlag.accept("mine", true);
+    }
+
+    private static void practiceComposeVsAndThen() {
+        Function<String, String> trim = String::trim;
+        Function<String, String> wrap = s -> "[" + s + "]";
+
+        String composed = trim.compose(wrap).apply(" code ");
+        String chained = trim.andThen(wrap).apply(" code ");
+
+        System.out.println("[compose-vs] composed=" + composed);
+        System.out.println("[compose-vs] andThen=" + chained);
     }
 
     private static void saveIfValid(String value, Consumer<String> onSave, Predicate<String> validator) {
