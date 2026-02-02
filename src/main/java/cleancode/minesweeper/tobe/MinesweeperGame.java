@@ -177,7 +177,7 @@ public class MinesweeperGame {
     private static void initializeGame() {
         for (int row = 0; row < BOARD_ROW_SIZE; row++) {
             for (int col = 0; col < BOARD_COLUMN_SIZE; col++) {
-                BOARD[row][col] = "□";
+                BOARD2[row][col] = Cell.of(CLOSED_CELL_SIGN);
             }
         }
 
@@ -238,7 +238,7 @@ public class MinesweeperGame {
         if (row < 0 || row >= BOARD_ROW_SIZE || col < 0 || col >= BOARD_COLUMN_SIZE) {
             return;
         }
-        if (!BOARD[row][col].equals("□")) {
+        if (!BOARD2[row][col].doesNotEqualsSign(CLOSED_CELL_SIGN)) {
             return;
         }
         if (isLandMineCell(row, col)) {

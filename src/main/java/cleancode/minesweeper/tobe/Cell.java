@@ -20,4 +20,8 @@ public class Cell {
         return this.sign;
     }
 
+    public boolean doesNotEqualsSign(String sign) {
+        return !equalsSign(sign);
+    }
+
 }
