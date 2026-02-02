@@ -12,4 +12,8 @@ public class Cell {
         return new Cell(sign);
     }
 
+    public boolean equalsSign(String sign) {
+        return this.sign.equals(sign);
+    }
+
 }
