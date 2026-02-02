@@ -14,6 +14,7 @@ public class MinesweeperGame {
     public static final int BOARD_COLUMN_SIZE = 10;
     public static final Scanner SCANNER = new Scanner(System.in);
     private static final String[][] BOARD = new String[BOARD_ROW_SIZE][BOARD_COLUMN_SIZE];
+    private static final Cell[][] BOARD2 = new Cell[BOARD_ROW_SIZE][BOARD_COLUMN_SIZE];
     private static final Integer[][] NEARBY_LAND_MINE_COUNTS = new Integer[BOARD_ROW_SIZE][BOARD_COLUMN_SIZE];
     private static final boolean[][] LAND_MINES = new boolean[BOARD_ROW_SIZE][BOARD_COLUMN_SIZE];
     public static final int LAND_MINE_COUNT = 10;
@@ -57,14 +58,14 @@ public class MinesweeperGame {
         int selectedRowIndex = getSelectedRowIndex(cellInput);
 
         if (doesUserChooseToPlantFlag(userActionInput)) {
-            BOARD[selectedRowIndex][selectedColumnIndex] = FLAG_SIGN;
+            BOARD2[selectedRowIndex][selectedColumnIndex] = Cell.of(FLAG_SIGN);
             checkIfGameOver();
             return;
         }
 
         if (doesUserChooseToOpenCell(userActionInput)) {
             if (isLandMineCell(selectedRowIndex, selectedColumnIndex)) {
-                BOARD[selectedRowIndex][selectedColumnIndex] = LAND_MINE_SIGN;
+                BOARD2[selectedRowIndex][selectedColumnIndex] = Cell.of(LAND_MINE_SIGN);
                 changeGameStatusToLose();
                 return;
             }
