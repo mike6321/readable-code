@@ -16,4 +16,8 @@ public class Cell {
         return this.sign.equals(sign);
     }
 
+    public String getSign() {
+        return this.sign;
+    }
+
 }
