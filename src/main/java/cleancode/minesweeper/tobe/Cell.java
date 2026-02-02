@@ -33,6 +33,10 @@ public class Cell {
         return Cell.of(OPENDED_CELL_SIGN);
     }
 
+    public static Cell ofNearbyLandMineCount(int count) {
+        return of(String.valueOf(count));
+    }
+
     public String getSign() {
         return this.sign;
     }
