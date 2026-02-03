@@ -5,7 +5,7 @@ public class Cell {
     private static final String FLAG_SIGN = "⚑";
     private static final String LAND_MINE_SIGN = "☼";
     private static final String CLOSED_CELL_SIGN = "□";
-    private static final String OPENDED_CELL_SIGN = "■";
+    private static final String OPENED_CELL_SIGN = "■";
 
     private final String sign;
 
@@ -30,7 +30,7 @@ public class Cell {
     }
 
     public static Cell ofOpened() {
-        return Cell.of(OPENDED_CELL_SIGN);
+        return Cell.of(OPENED_CELL_SIGN);
     }
 
     public static Cell ofNearbyLandMineCount(int count) {
