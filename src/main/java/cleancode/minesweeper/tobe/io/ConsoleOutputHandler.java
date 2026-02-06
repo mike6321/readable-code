@@ -1,5 +1,6 @@
 package cleancode.minesweeper.tobe.io;
 
+import cleancode.minesweeper.tobe.GameException;
 import cleancode.minesweeper.tobe.Cell;
 
 public class ConsoleOutputHandler {
@@ -37,4 +38,11 @@ public class ConsoleOutputHandler {
         System.out.println("선택한 셀에 대한 행위를 선택하세요. (1: 오픈, 2: 깃발 꽂기)");
     }
 
+    public void printErrorMessage(GameException e) {
+        System.out.println(e.getMessage());
+    }
+
+    public void printSimpleMessage() {
+        System.out.println("프로그램에 문제가 생겼습니다.");
+    }
 }
