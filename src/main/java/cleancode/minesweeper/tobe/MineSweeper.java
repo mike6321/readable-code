@@ -4,14 +4,12 @@ import cleancode.minesweeper.tobe.io.ConsoleInputHandler;
 import cleancode.minesweeper.tobe.io.ConsoleOutputHandler;
 
 import java.util.Arrays;
-import java.util.Random;
 
 public class MineSweeper {
 
     public static final int BOARD_ROW_SIZE = 8;
     public static final int BOARD_COLUMN_SIZE = 10;
-    private static final Cell[][] BOARD = new Cell[BOARD_ROW_SIZE][BOARD_COLUMN_SIZE];
-    public static final int LAND_MINE_COUNT = 10;
+    private static final GameBoard BOARD = new GameBoard(BOARD_ROW_SIZE, BOARD_COLUMN_SIZE);
     private int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
 
     private final ConsoleInputHandler consoleInputHandler = new ConsoleInputHandler();
@@ -19,7 +17,7 @@ public class MineSweeper {
 
     public void run() {
         consoleOutputHandler.showGameStartComments();
-        initializeGame();
+        BOARD.initializeGame();
 
         while (true) {
             try {
@@ -71,10 +69,6 @@ public class MineSweeper {
 
     private void changeGameStatusToLose() {
         gameStatus = -1;
-    }
-
-    private boolean isLandMineCell(int selectedRowIndex, int selectedColumnIndex) {
-        return BOARD[selectedRowIndex][selectedColumnIndex].isLandMine();
     }
 
     private boolean doesUserChooseToOpenCell(String userActionInput) {
@@ -152,59 +146,6 @@ public class MineSweeper {
             case 'j' -> 9;
             default -> throw new GameException("잘못된 입력입니다.");
         };
-    }
-
-    private void initializeGame() {
-        for (int row = 0; row < BOARD_ROW_SIZE; row++) {
-            for (int col = 0; col < BOARD_COLUMN_SIZE; col++) {
-                BOARD[row][col] = Cell.create();
-            }
-        }
-
-        for (int i = 0; i < LAND_MINE_COUNT; i++) {
-            int col = new Random().nextInt(BOARD_COLUMN_SIZE);
-            int row = new Random().nextInt(BOARD_ROW_SIZE);
-            BOARD[row][col].turnOnLandMine();
-        }
-
-        for (int row = 0; row < BOARD_ROW_SIZE; row++) {
-            for (int col = 0; col < BOARD_COLUMN_SIZE; col++) {
-                if (isLandMineCell(row, col)) {
-                    continue;
-                }
-                int count = countNearbyLandMins(row, col);
-                BOARD[row][col].updateNearByLandMineCount(count);
-            }
-        }
-    }
-
-    private int countNearbyLandMins(int row, int col) {
-        int count = 0;
-        if (row - 1 >= 0 && col - 1 >= 0 && isLandMineCell(row - 1, col - 1)) {
-            count++;
-        }
-        if (row - 1 >= 0 && isLandMineCell(row - 1, col)) {
-            count++;
-        }
-        if (row - 1 >= 0 && col + 1 < BOARD_COLUMN_SIZE && isLandMineCell(row - 1, col + 1)) {
-            count++;
-        }
-        if (col - 1 >= 0 && isLandMineCell(row, col - 1)) {
-            count++;
-        }
-        if (col + 1 < BOARD_COLUMN_SIZE && isLandMineCell(row, col + 1)) {
-            count++;
-        }
-        if (row + 1 < BOARD_ROW_SIZE && col - 1 >= 0 && isLandMineCell(row + 1, col - 1)) {
-            count++;
-        }
-        if (row + 1 < BOARD_ROW_SIZE && isLandMineCell(row + 1, col)) {
-            count++;
-        }
-        if (row + 1 < BOARD_ROW_SIZE && col + 1 < BOARD_COLUMN_SIZE && isLandMineCell(row + 1, col + 1)) {
-            count++;
-        }
-        return count;
     }
 
     private void open(int row, int col) {
