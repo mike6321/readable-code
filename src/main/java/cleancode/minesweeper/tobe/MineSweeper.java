@@ -5,7 +5,6 @@ import cleancode.minesweeper.tobe.io.ConsoleOutputHandler;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.Scanner;
 
 public class MineSweeper {
 
