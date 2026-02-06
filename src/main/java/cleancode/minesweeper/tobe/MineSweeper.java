@@ -9,7 +9,7 @@ public class MineSweeper {
 
     public static final int BOARD_ROW_SIZE = 8;
     public static final int BOARD_COLUMN_SIZE = 10;
-    private static final GameBoard BOARD = new GameBoard(BOARD_ROW_SIZE, BOARD_COLUMN_SIZE);
+    private static final GameBoard gameBoard = new GameBoard(BOARD_ROW_SIZE, BOARD_COLUMN_SIZE);
     private int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
 
     private final ConsoleInputHandler consoleInputHandler = new ConsoleInputHandler();
@@ -17,11 +17,11 @@ public class MineSweeper {
 
     public void run() {
         consoleOutputHandler.showGameStartComments();
-        BOARD.initializeGame();
+        gameBoard.initializeGame();
 
         while (true) {
-            try {
-                consoleOutputHandler.showBoard(BOARD);
+            try { 
+                consoleOutputHandler.showBoard(gameBoard);
 
                 if (doesUserWinTheGame()) {
                     consoleOutputHandler.printGameWinningComment();
@@ -48,14 +48,14 @@ public class MineSweeper {
         int selectedRowIndex = getSelectedRowIndex(cellInput);
 
         if (doesUserChooseToPlantFlag(userActionInput)) {
-            BOARD[selectedRowIndex][selectedColumnIndex].flag();
+            gameBoard[selectedRowIndex][selectedColumnIndex].flag();
             checkIfGameOver();
             return;
         }
 
         if (doesUserChooseToOpenCell(userActionInput)) {
             if (isLandMineCell(selectedRowIndex, selectedColumnIndex)) {
-                BOARD[selectedRowIndex][selectedColumnIndex].opened();
+                gameBoard[selectedRowIndex][selectedColumnIndex].opened();
                 changeGameStatusToLose();
                 return;
             }
@@ -119,7 +119,7 @@ public class MineSweeper {
     }
 
     private boolean isAllCellChecked() {
-        return Arrays.stream(BOARD)
+        return Arrays.stream(gameBoard)
                 .flatMap(Arrays::stream)
                 .allMatch(Cell::isChecked);
     }
@@ -152,16 +152,16 @@ public class MineSweeper {
         if (row < 0 || row >= BOARD_ROW_SIZE || col < 0 || col >= BOARD_COLUMN_SIZE) {
             return;
         }
-        if (BOARD[row][col].isOpened()) {
+        if (gameBoard[row][col].isOpened()) {
             return;
         }
         if (isLandMineCell(row, col)) {
             return;
         }
 
-        BOARD[row][col].opened();
+        gameBoard[row][col].opened();
 
-        if (BOARD[row][col].hasLandMineCount()) {
+        if (gameBoard[row][col].hasLandMineCount()) {
             return;
         }
 
