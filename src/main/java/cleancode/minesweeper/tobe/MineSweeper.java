@@ -11,7 +11,6 @@ public class MineSweeper {
 
     public static final int BOARD_ROW_SIZE = 8;
     public static final int BOARD_COLUMN_SIZE = 10;
-    public static final Scanner SCANNER = new Scanner(System.in);
     private static final Cell[][] BOARD = new Cell[BOARD_ROW_SIZE][BOARD_COLUMN_SIZE];
     public static final int LAND_MINE_COUNT = 10;
     private int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
@@ -39,11 +38,10 @@ public class MineSweeper {
                 String cellInput = getCellInputFromUser();
                 String userActionInput = getUserActionInputFromUser();
                 actOnCell(cellInput, userActionInput);
-            } catch (AppException e) {
-                System.out.println(e.getMessage());
+            } catch (GameException e) {
+                consoleOutputHandler.printErrorMessage(e);
             } catch (Exception e) {
-                System.out.println("프로그램에 문제가 생겼습니다.");
-                e.printStackTrace();
+                consoleOutputHandler.printSimpleMessage();
             }
         }
     }
@@ -136,7 +134,7 @@ public class MineSweeper {
     private int convertRowFrom(char cellInputRow) {
         int rowIndex = Character.getNumericValue(cellInputRow) - 1;
         if (rowIndex > BOARD_ROW_SIZE) {
-            throw new AppException("잘못된 입력입니다.");
+            throw new GameException("잘못된 입력입니다.");
         }
         return rowIndex;
     }
@@ -153,7 +151,7 @@ public class MineSweeper {
             case 'h' -> 7;
             case 'i' -> 8;
             case 'j' -> 9;
-            default -> throw new AppException("잘못된 입력입니다.");
+            default -> throw new GameException("잘못된 입력입니다.");
         };
     }
 
