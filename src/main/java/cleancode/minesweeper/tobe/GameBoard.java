@@ -1,5 +1,6 @@
 package cleancode.minesweeper.tobe;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class GameBoard {
@@ -88,8 +89,62 @@ public class GameBoard {
         return board[rowIndex][colIndex];
     }
 
-    private boolean isLandMineCell(int selectedRowIndex, int selectedColumnIndex) {
+    public void flag(int rowIndex, int columnIndex) {
+        Cell cell = findCell(rowIndex, columnIndex);
+        cell.flag();
+    }
+
+    boolean isLandMineCell(int selectedRowIndex, int selectedColumnIndex) {
         Cell cell = findCell(selectedRowIndex, selectedColumnIndex);
         return cell.isLandMine();
     }
+
+    public void open(int selectedRowIndex, int selectedColumnIndex) {
+        Cell cell = findCell(selectedRowIndex, selectedColumnIndex);
+        cell.opened();
+    }
+
+    public boolean isAllCellChecked() {
+        return Arrays.stream(board)
+                .flatMap(Arrays::stream)
+                .allMatch(Cell::isChecked);
+    }
+
+    public void openSurroundedCells(int row, int col) {
+        if (row < 0 || row >= getRowSize() || col < 0 || col >= getColumnSize()) {
+            return;
+        }
+        if (isOpenedCell(row, col)) {
+            return;
+        }
+        if (isLandMineCell(row, col)) {
+            return;
+        }
+
+        open(row, col);
+
+        if (doesCellHaveLandMineCount(row, col)) {
+            return;
+        }
+
+        openSurroundedCells(row - 1, col - 1);
+        openSurroundedCells(row - 1, col);
+        openSurroundedCells(row - 1, col + 1);
+        openSurroundedCells(row, col - 1);
+        openSurroundedCells(row, col + 1);
+        openSurroundedCells(row + 1, col - 1);
+        openSurroundedCells(row + 1, col);
+        openSurroundedCells(row + 1, col + 1);
+    }
+
+    private boolean doesCellHaveLandMineCount(int row, int col) {
+        return findCell(row, col)
+                .hasLandMineCount();
+    }
+
+    private boolean isOpenedCell(int row, int col) {
+        return findCell(row, col).isOpened();
+    }
+
+
 }
