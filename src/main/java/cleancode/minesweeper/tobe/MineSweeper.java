@@ -5,9 +5,10 @@ import cleancode.minesweeper.tobe.io.ConsoleOutputHandler;
 
 public class MineSweeper {
 
-    public static final int BOARD_ROW_SIZE = 8;
-    public static final int BOARD_COLUMN_SIZE = 10;
+    private static final int BOARD_ROW_SIZE = 8;
+    private static final int BOARD_COLUMN_SIZE = 10;
     private static final GameBoard gameBoard = new GameBoard(BOARD_ROW_SIZE, BOARD_COLUMN_SIZE);
+    private static final char BASE_CHAR_FOR_COLUMN = 'a';
     private int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
 
     private final ConsoleInputHandler consoleInputHandler = new ConsoleInputHandler();
@@ -124,19 +125,12 @@ public class MineSweeper {
     }
 
     private int convertColumnFrom(char cellInputColumn) {
-        return switch (cellInputColumn) {
-            case 'a' -> 0;
-            case 'b' -> 1;
-            case 'c' -> 2;
-            case 'd' -> 3;
-            case 'e' -> 4;
-            case 'f' -> 5;
-            case 'g' -> 6;
-            case 'h' -> 7;
-            case 'i' -> 8;
-            case 'j' -> 9;
-            default -> throw new GameException("잘못된 입력입니다.");
-        };
+        int columnIndex = cellInputColumn - BASE_CHAR_FOR_COLUMN;
+        if (columnIndex < 0) {
+            throw new GameException("잘못된 입력입니다.");
+        }
+
+        return columnIndex;
     }
 
 }
