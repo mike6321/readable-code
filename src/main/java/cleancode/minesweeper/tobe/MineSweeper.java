@@ -79,7 +79,7 @@ public class MineSweeper {
     }
 
     private int getSelectedRowIndex(String cellInput) {
-        char cellInputRow = cellInput.charAt(1);
+        String cellInputRow = cellInput.substring(1);
         return convertRowFrom(cellInputRow);
     }
 
@@ -116,8 +116,8 @@ public class MineSweeper {
         gameStatus = 1;
     }
 
-    private int convertRowFrom(char cellInputRow) {
-        int rowIndex = Character.getNumericValue(cellInputRow) - 1;
+    private int convertRowFrom(String cellInputRow) { // "10"
+        int rowIndex = Integer.parseInt(cellInputRow) - 1;
         if (rowIndex > BOARD_ROW_SIZE) {
             throw new GameException("잘못된 입력입니다.");
         }
