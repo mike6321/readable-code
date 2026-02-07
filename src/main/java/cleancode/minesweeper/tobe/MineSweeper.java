@@ -3,8 +3,6 @@ package cleancode.minesweeper.tobe;
 import cleancode.minesweeper.tobe.io.ConsoleInputHandler;
 import cleancode.minesweeper.tobe.io.ConsoleOutputHandler;
 
-import java.util.Arrays;
-
 public class MineSweeper {
 
     public static final int BOARD_ROW_SIZE = 8;
@@ -20,7 +18,7 @@ public class MineSweeper {
         gameBoard.initializeGame();
 
         while (true) {
-            try { 
+            try {
                 consoleOutputHandler.showBoard(gameBoard);
 
                 if (doesUserWinTheGame()) {
@@ -48,19 +46,19 @@ public class MineSweeper {
         int selectedRowIndex = getSelectedRowIndex(cellInput);
 
         if (doesUserChooseToPlantFlag(userActionInput)) {
-            gameBoard[selectedRowIndex][selectedColumnIndex].flag();
+            gameBoard.flag(selectedRowIndex, selectedColumnIndex);
             checkIfGameOver();
             return;
         }
 
         if (doesUserChooseToOpenCell(userActionInput)) {
-            if (isLandMineCell(selectedRowIndex, selectedColumnIndex)) {
-                gameBoard[selectedRowIndex][selectedColumnIndex].opened();
+            if (gameBoard.isLandMineCell(selectedRowIndex, selectedColumnIndex)) {
+                gameBoard.open(selectedRowIndex, selectedColumnIndex);
                 changeGameStatusToLose();
                 return;
             }
 
-            open(selectedRowIndex, selectedColumnIndex);
+            gameBoard.openSurroundedCells(selectedRowIndex, selectedColumnIndex);
             checkIfGameOver();
             return;
         }
@@ -108,20 +106,13 @@ public class MineSweeper {
     }
 
     private void checkIfGameOver() {
-        boolean isAllOpened = isAllCellChecked();
-        if (isAllOpened) {
+        if (gameBoard.isAllCellChecked()) {
             changeGameStatusToWin();
         }
     }
 
     private void changeGameStatusToWin() {
         gameStatus = 1;
-    }
-
-    private boolean isAllCellChecked() {
-        return Arrays.stream(gameBoard)
-                .flatMap(Arrays::stream)
-                .allMatch(Cell::isChecked);
     }
 
     private int convertRowFrom(char cellInputRow) {
@@ -146,33 +137,6 @@ public class MineSweeper {
             case 'j' -> 9;
             default -> throw new GameException("잘못된 입력입니다.");
         };
-    }
-
-    private void open(int row, int col) {
-        if (row < 0 || row >= BOARD_ROW_SIZE || col < 0 || col >= BOARD_COLUMN_SIZE) {
-            return;
-        }
-        if (gameBoard[row][col].isOpened()) {
-            return;
-        }
-        if (isLandMineCell(row, col)) {
-            return;
-        }
-
-        gameBoard[row][col].opened();
-
-        if (gameBoard[row][col].hasLandMineCount()) {
-            return;
-        }
-
-        open(row - 1, col - 1);
-        open(row - 1, col);
-        open(row - 1, col + 1);
-        open(row, col - 1);
-        open(row, col + 1);
-        open(row + 1, col - 1);
-        open(row + 1, col);
-        open(row + 1, col + 1);
     }
 
 }
