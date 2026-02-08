@@ -45,6 +45,9 @@ public class GameBoard {
                     continue;
                 }
                 int count = countNearbyLandMins(row, col);
+                if (count == 0) {
+                    continue;
+                }
                 NumberCell numberCell = new NumberCell();
                 numberCell.updateNearByLandMineCount(count);
                 board[row][col] = numberCell;
