@@ -1,17 +1,11 @@
 package cleancode.minesweeper.tobe.cell;
 
-public class NumberCell extends Cell2 {
+public class NumberCell extends Cell {
 
-    private int nearByLandMineCount;
+    private final int nearByLandMineCount;
 
-    @Override
-    public void turnOnLandMine() {
-        throw new UnsupportedOperationException("지원하지 않는 기능입니다.");
-    }
-
-    @Override
-    public void updateNearByLandMineCount(int count) {
-        this.nearByLandMineCount = count;
+    public NumberCell(int nearByLandMineCount) {
+        this.nearByLandMineCount = nearByLandMineCount;
     }
 
     @Override
