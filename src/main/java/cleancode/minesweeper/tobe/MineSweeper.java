@@ -7,12 +7,12 @@ public class MineSweeper {
 
     private static final int BOARD_ROW_SIZE = 8;
     private static final int BOARD_COLUMN_SIZE = 10;
-    private static final GameBoard gameBoard = new GameBoard(BOARD_ROW_SIZE, BOARD_COLUMN_SIZE);
-    private static final char BASE_CHAR_FOR_COLUMN = 'a';
     private int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
 
+    private final GameBoard gameBoard = new GameBoard(BOARD_ROW_SIZE, BOARD_COLUMN_SIZE);
     private final ConsoleInputHandler consoleInputHandler = new ConsoleInputHandler();
     private final ConsoleOutputHandler consoleOutputHandler = new ConsoleOutputHandler();
+    private final BoardIndexConverter boardIndexConverter = new BoardIndexConverter();
 
     public void run() {
         consoleOutputHandler.showGameStartComments();
@@ -43,8 +43,8 @@ public class MineSweeper {
     }
 
     private void actOnCell(String cellInput, String userActionInput) {
-        int selectedColumnIndex = getSelectedColumnIndex(cellInput);
-        int selectedRowIndex = getSelectedRowIndex(cellInput);
+        int selectedColumnIndex = boardIndexConverter.getSelectedColumnIndex(cellInput, gameBoard.getColumnSize());
+        int selectedRowIndex = boardIndexConverter.getSelectedRowIndex(cellInput, gameBoard.getRowSize());
 
         if (doesUserChooseToPlantFlag(userActionInput)) {
             gameBoard.flag(selectedRowIndex, selectedColumnIndex);
@@ -78,16 +78,6 @@ public class MineSweeper {
         return userActionInput.equals("2");
     }
 
-    private int getSelectedRowIndex(String cellInput) {
-        String cellInputRow = cellInput.substring(1);
-        return convertRowFrom(cellInputRow);
-    }
-
-    private int getSelectedColumnIndex(String cellInput) {
-        char cellInputColumn = cellInput.charAt(0);
-        return convertColumnFrom(cellInputColumn);
-    }
-
     private String getUserActionInputFromUser() {
         consoleOutputHandler.printCommentForUserAction();
         return consoleInputHandler.getUserInput();
@@ -114,23 +104,6 @@ public class MineSweeper {
 
     private void changeGameStatusToWin() {
         gameStatus = 1;
-    }
-
-    private int convertRowFrom(String cellInputRow) { // "10"
-        int rowIndex = Integer.parseInt(cellInputRow) - 1;
-        if (rowIndex > BOARD_ROW_SIZE) {
-            throw new GameException("잘못된 입력입니다.");
-        }
-        return rowIndex;
-    }
-
-    private int convertColumnFrom(char cellInputColumn) {
-        int columnIndex = cellInputColumn - BASE_CHAR_FOR_COLUMN;
-        if (columnIndex < 0) {
-            throw new GameException("잘못된 입력입니다.");
-        }
-
-        return columnIndex;
     }
 
 }
