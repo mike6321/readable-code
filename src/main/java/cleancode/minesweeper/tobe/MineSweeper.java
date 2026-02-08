@@ -5,8 +5,8 @@ import cleancode.minesweeper.tobe.io.ConsoleOutputHandler;
 
 public class MineSweeper {
 
-    private static final int BOARD_ROW_SIZE = 8;
-    private static final int BOARD_COLUMN_SIZE = 10;
+    private static final int BOARD_ROW_SIZE = 14;
+    private static final int BOARD_COLUMN_SIZE = 18;
     private int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
 
     private final GameBoard gameBoard = new GameBoard(BOARD_ROW_SIZE, BOARD_COLUMN_SIZE);
