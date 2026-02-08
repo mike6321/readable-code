@@ -161,5 +161,10 @@ public class GameBoard {
         return findCell(row, col).isOpened();
     }
 
+    public void temp(Cell2 cell) {
+        if (cell instanceof NumberCell) {
+            cell.updateNearByLandMineCount(0);
+        }
+    }
 
 }
