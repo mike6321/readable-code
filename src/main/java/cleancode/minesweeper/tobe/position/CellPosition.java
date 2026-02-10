@@ -47,4 +47,16 @@ public class CellPosition {
         return this.columnIndex;
     }
 
+    public CellPosition calculatePositionBy(RelativePosition relativePosition) {
+        return CellPosition.of(
+                this.rowIndex + relativePosition.getDeltaRow(),
+                this.columnIndex + relativePosition.getDeltaColumn()
+        );
+    }
+
+    public boolean canCalculatePositionBy(RelativePosition relativePosition) {
+        return this.rowIndex + relativePosition.getDeltaRow() > 0
+                && this.columnIndex + relativePosition.getDeltaColumn() > 0;
+    }
+
 }
