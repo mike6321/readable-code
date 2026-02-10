@@ -48,10 +48,14 @@ public class CellPosition {
     }
 
     public CellPosition calculatePositionBy(RelativePosition relativePosition) {
-        return CellPosition.of(
-                this.rowIndex + relativePosition.getDeltaRow(),
-                this.columnIndex + relativePosition.getDeltaColumn()
-        );
+        if (canCalculatePositionBy(relativePosition)) {
+            return CellPosition.of(
+                    this.rowIndex + relativePosition.getDeltaRow(),
+                    this.columnIndex + relativePosition.getDeltaColumn()
+            );
+        }
+
+        throw new IllegalArgumentException("잘못된 좌표입니다.");
     }
 
     public boolean canCalculatePositionBy(RelativePosition relativePosition) {
