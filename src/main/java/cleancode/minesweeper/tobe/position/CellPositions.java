@@ -30,4 +30,9 @@ public class CellPositions {
         return of(cellPositions);
     }
 
+    public List<CellPosition> getPositions() {
+        // return cellPositions;
+        // 이렇게 리턴하면 바깥에서 cellPositions 를 조작하는것이 가능하게 된다. (하면 안됌)
+        return new ArrayList<>(cellPositions);
+    }
 }
