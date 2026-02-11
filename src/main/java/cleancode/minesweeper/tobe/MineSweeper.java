@@ -14,7 +14,6 @@ public class MineSweeper implements GameInitializable, GameRunnable {
     private final GameBoard gameBoard;
     private final InputHandler inputHandler;
     private final OutputHandler outputHandler;
-    private final BoardIndexConverter boardIndexConverter = new BoardIndexConverter();
 
     public MineSweeper(GameLevel gameLevel, InputHandler inputHandler, OutputHandler outputHandler) {
         this.gameBoard = new GameBoard(gameLevel);
