@@ -1,12 +1,14 @@
 package cleancode.minesweeper.tobe;
 
-import cleancode.minesweeper.tobe.cell.*;
+import cleancode.minesweeper.tobe.cell.Cell;
+import cleancode.minesweeper.tobe.cell.EmptyCell;
+import cleancode.minesweeper.tobe.cell.LandMineCell;
+import cleancode.minesweeper.tobe.cell.NumberCell;
 import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.position.CellPosition;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class GameBoard {
@@ -147,13 +149,10 @@ public class GameBoard {
             return;
         }
 
-        for (RelativePosition relativePosition : RelativePosition.SURROUNDED_POSITIONS) {
-            if (cellPosition.canCalculatePositionBy(relativePosition)) {
-                CellPosition nextCellPosition = cellPosition.calculatePositionBy(relativePosition);
-                openSurroundedCells(nextCellPosition);
-            }
-        }
-
+        RelativePosition.SURROUNDED_POSITIONS.stream()
+                .filter(cellPosition::canCalculatePositionBy)
+                .map(cellPosition::calculatePositionBy)
+                .forEach(this::openSurroundedCells);
     }
 
     private boolean doesCellHaveLandMineCount(CellPosition cellPosition) {
