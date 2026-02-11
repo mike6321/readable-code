@@ -25,14 +25,13 @@ public class GameBoard {
 
     public void initializeGame() {
         CellPositions cellPositions = CellPositions.from(board);
+        List<CellPosition> allPositions = cellPositions.getPositions();
+        for (CellPosition position : allPositions) {
+            board[position.getRowIndex()][position.getColumnIndex()] = new EmptyCell();
+        }
 
         int rowSize = getRowSize();
         int columnSize = getColumnSize();
-        for (int row = 0; row < rowSize; row++) {
-            for (int col = 0; col < columnSize; col++) {
-                board[row][col] = new EmptyCell();
-            }
-        }
 
         for (int i = 0; i < landMineCount; i++) {
             int landMineColumn = new Random().nextInt(columnSize);
