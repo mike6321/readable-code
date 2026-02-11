@@ -9,6 +9,7 @@ import cleancode.minesweeper.tobe.position.CellPosition;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class GameBoard {
@@ -55,13 +56,18 @@ public class GameBoard {
     }
 
     private int countNearbyLandMins(CellPosition cellPosition) {
-        return Math.toIntExact(RelativePosition.SURROUNDED_POSITIONS.stream()
+        return Math.toIntExact(calculateSurroundedPositions(cellPosition).stream()
+                .filter(this::isLandMineCell)
+                .count());
+    }
+
+    private List<CellPosition> calculateSurroundedPositions(CellPosition cellPosition) {
+        return RelativePosition.SURROUNDED_POSITIONS.stream()
                 .filter(cellPosition::canCalculatePositionBy)
                 .map(cellPosition::calculatePositionBy)
                 .filter(position -> position.isRowIndexLessThan(getRowSize()))
                 .filter(position -> position.isColumnIndexLessThan(getColumnSize()))
-                .filter(this::isLandMineCell)
-                .count());
+                .toList();
     }
 
     public int getRowSize() {
@@ -124,11 +130,7 @@ public class GameBoard {
             return;
         }
 
-        RelativePosition.SURROUNDED_POSITIONS.stream()
-                .filter(cellPosition::canCalculatePositionBy)
-                .map(cellPosition::calculatePositionBy)
-                .filter(position -> position.isRowIndexLessThan(getRowSize()))
-                .filter(position -> position.isColumnIndexLessThan(getColumnSize()))
+        calculateSurroundedPositions(cellPosition)
                 .forEach(this::openSurroundedCells);
     }
 
