@@ -41,7 +41,8 @@ public class GameBoard {
 
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < columnSize; col++) {
-                if (isLandMineCell(row, col)) {
+                CellPosition cellPosition = CellPosition.of(row, col);
+                if (isLandMineCell(cellPosition)) {
                     continue;
                 }
                 int count = countNearbyLandMins(row, col);
