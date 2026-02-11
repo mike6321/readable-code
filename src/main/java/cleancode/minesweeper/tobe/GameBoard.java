@@ -3,6 +3,7 @@ package cleancode.minesweeper.tobe;
 import cleancode.minesweeper.tobe.cell.*;
 import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.position.CellPosition;
+import cleancode.minesweeper.tobe.position.CellPositions;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 
 import java.util.Arrays;
@@ -23,6 +24,8 @@ public class GameBoard {
     }
 
     public void initializeGame() {
+        CellPositions cellPositions = CellPositions.from(board);
+
         int rowSize = getRowSize();
         int columnSize = getColumnSize();
         for (int row = 0; row < rowSize; row++) {
