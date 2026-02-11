@@ -132,10 +132,6 @@ public class GameBoard {
     }
 
     public void openSurroundedCells(CellPosition cellPosition) {
-        if (cellPosition.isRowIndexMoreThanOrEqual(getRowSize()) ||
-                cellPosition.isColumnIndexMoreThanOrEqual(getColumnSize())) {
-            return;
-        }
         if (isOpenedCell(cellPosition)) {
             return;
         }
@@ -152,6 +148,8 @@ public class GameBoard {
         RelativePosition.SURROUNDED_POSITIONS.stream()
                 .filter(cellPosition::canCalculatePositionBy)
                 .map(cellPosition::calculatePositionBy)
+                .filter(position -> position.isRowIndexLessThan(getRowSize()))
+                .filter(position -> position.isColumnIndexLessThan(getColumnSize()))
                 .forEach(this::openSurroundedCells);
     }
 

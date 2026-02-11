@@ -63,4 +63,12 @@ public class CellPosition {
                 && this.columnIndex + relativePosition.getDeltaColumn() > 0;
     }
 
+    public boolean isRowIndexLessThan(int rowIndex) {
+        return this.rowIndex < rowIndex;
+    }
+
+    public boolean isColumnIndexLessThan(int columnIndex) {
+        return this.columnIndex < columnIndex;
+    }
+
 }
