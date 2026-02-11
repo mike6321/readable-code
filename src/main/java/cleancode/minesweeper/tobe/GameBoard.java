@@ -45,7 +45,7 @@ public class GameBoard {
                 if (isLandMineCell(cellPosition)) {
                     continue;
                 }
-                int count = countNearbyLandMins(row, col);
+                int count = countNearbyLandMins(cellPosition);
                 if (count == 0) {
                     continue;
                 }
@@ -54,36 +54,14 @@ public class GameBoard {
         }
     }
 
-    private int countNearbyLandMins(int row, int col) {
-        int rowSize = getRowSize();
-        int columnSize = getColumnSize();
-        int count = 0;
-
-        if (row - 1 >= 0 && col - 1 >= 0 && isLandMineCell(row - 1, col - 1)) {
-            count++;
-        }
-        if (row - 1 >= 0 && isLandMineCell(row - 1, col)) {
-            count++;
-        }
-        if (row - 1 >= 0 && col + 1 < columnSize && isLandMineCell(row - 1, col + 1)) {
-            count++;
-        }
-        if (col - 1 >= 0 && isLandMineCell(row, col - 1)) {
-            count++;
-        }
-        if (col + 1 < columnSize && isLandMineCell(row, col + 1)) {
-            count++;
-        }
-        if (row + 1 < rowSize && col - 1 >= 0 && isLandMineCell(row + 1, col - 1)) {
-            count++;
-        }
-        if (row + 1 < rowSize && isLandMineCell(row + 1, col)) {
-            count++;
-        }
-        if (row + 1 < rowSize && col + 1 < columnSize && isLandMineCell(row + 1, col + 1)) {
-            count++;
-        }
-        return count;
+    private int countNearbyLandMins(CellPosition cellPosition) {
+        return Math.toIntExact(RelativePosition.SURROUNDED_POSITIONS.stream()
+                .filter(cellPosition::canCalculatePositionBy)
+                .map(cellPosition::calculatePositionBy)
+                .filter(position -> position.isRowIndexLessThan(getRowSize()))
+                .filter(position -> position.isColumnIndexLessThan(getColumnSize()))
+                .filter(this::isLandMineCell)
+                .count());
     }
 
     public int getRowSize() {
