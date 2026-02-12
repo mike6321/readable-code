@@ -27,16 +27,15 @@ public class GameBoard {
         CellPositions cellPositions = CellPositions.from(board);
         List<CellPosition> allPositions = cellPositions.getPositions();
         for (CellPosition position : allPositions) {
-            board[position.getRowIndex()][position.getColumnIndex()] = new EmptyCell();
+            updateCellAt(position, new EmptyCell());
         }
 
         int rowSize = getRowSize();
         int columnSize = getColumnSize();
 
-        for (int i = 0; i < landMineCount; i++) {
-            int landMineColumn = new Random().nextInt(columnSize);
-            int landMineRow = new Random().nextInt(rowSize);
-            board[landMineRow][landMineColumn] = new LandMineCell();
+        List<CellPosition> landMinePositions = cellPositions.extractRandomPositions(landMineCount);
+        for (CellPosition landMinePosition : landMinePositions) {
+            updateCellAt(landMinePosition, new LandMineCell());
         }
 
         for (int row = 0; row < rowSize; row++) {
@@ -49,9 +48,13 @@ public class GameBoard {
                 if (count == 0) {
                     continue;
                 }
-                board[row][col] = new NumberCell(count);
+                updateCellAt(cellPosition, new NumberCell(count));
             }
         }
+    }
+
+    private void updateCellAt(CellPosition position, Cell cell) {
+        board[position.getRowIndex()][position.getColumnIndex()] = cell;
     }
 
     private int countNearbyLandMins(CellPosition cellPosition) {
