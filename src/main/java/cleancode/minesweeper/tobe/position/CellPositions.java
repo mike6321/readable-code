@@ -3,6 +3,7 @@ package cleancode.minesweeper.tobe.position;
 import cleancode.minesweeper.tobe.cell.Cell;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CellPositions {
@@ -34,5 +35,12 @@ public class CellPositions {
         // return cellPositions;
         // 이렇게 리턴하면 바깥에서 cellPositions 를 조작하는것이 가능하게 된다. (하면 안됌)
         return new ArrayList<>(cellPositions);
+    }
+
+    public List<CellPosition> extractRandomPositions(int count) {
+        List<CellPosition> cellPositions = new ArrayList<>(this.cellPositions);
+        Collections.shuffle(cellPositions);
+
+        return cellPositions.subList(0, count);
     }
 }
