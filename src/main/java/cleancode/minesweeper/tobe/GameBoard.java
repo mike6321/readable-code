@@ -28,25 +28,14 @@ public class GameBoard {
         List<CellPosition> allPositions = cellPositions.getPositions();
         updateCellsAt(allPositions, new EmptyCell());
 
-        int rowSize = getRowSize();
-        int columnSize = getColumnSize();
-
         List<CellPosition> landMinePositions = cellPositions.extractRandomPositions(landMineCount);
         updateCellsAt(landMinePositions, new LandMineCell ());
 
-        List<CellPosition> numberPositions = cellPositions.subtract(landMinePositions);
-
-        for (int row = 0; row < rowSize; row++) {
-            for (int col = 0; col < columnSize; col++) {
-                CellPosition cellPosition = CellPosition.of(row, col);
-                if (isLandMineCell(cellPosition)) {
-                    continue;
-                }
-                int count = countNearbyLandMins(cellPosition);
-                if (count == 0) {
-                    continue;
-                }
-                updateCellAt(cellPosition, new NumberCell(count));
+        List<CellPosition> numberPositionCandidates = cellPositions.subtract(landMinePositions);
+        for (CellPosition candidate : numberPositionCandidates) {
+            int count = countNearbyLandMins(candidate);
+            if (count != 0) {
+                updateCellAt(candidate, new NumberCell(count));
             }
         }
     }
