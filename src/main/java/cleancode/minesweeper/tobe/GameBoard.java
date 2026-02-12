@@ -26,17 +26,15 @@ public class GameBoard {
     public void initializeGame() {
         CellPositions cellPositions = CellPositions.from(board);
         List<CellPosition> allPositions = cellPositions.getPositions();
-        for (CellPosition position : allPositions) {
-            updateCellAt(position, new EmptyCell());
-        }
+        updateCellsAt(allPositions, new EmptyCell());
 
         int rowSize = getRowSize();
         int columnSize = getColumnSize();
 
         List<CellPosition> landMinePositions = cellPositions.extractRandomPositions(landMineCount);
-        for (CellPosition landMinePosition : landMinePositions) {
-            updateCellAt(landMinePosition, new LandMineCell());
-        }
+        updateCellsAt(landMinePositions, new LandMineCell ());
+
+        List<CellPosition> numberPositions = cellPositions.subtract(landMinePositions);
 
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < columnSize; col++) {
@@ -50,6 +48,12 @@ public class GameBoard {
                 }
                 updateCellAt(cellPosition, new NumberCell(count));
             }
+        }
+    }
+
+    private void updateCellsAt(List<CellPosition> allPositions, Cell cell) {
+        for (CellPosition position : allPositions) {
+            updateCellAt(position, cell);
         }
     }
 
