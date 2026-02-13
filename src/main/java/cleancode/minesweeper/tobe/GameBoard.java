@@ -6,9 +6,7 @@ import cleancode.minesweeper.tobe.position.CellPosition;
 import cleancode.minesweeper.tobe.position.CellPositions;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class GameBoard {
 
@@ -36,11 +34,17 @@ public class GameBoard {
 
     private void initializeEmptyCells(CellPositions cellPositions) {
         List<CellPosition> allPositions = cellPositions.getPositions();
-        updateCellsAt(allPositions, new EmptyCell());
+        Cell cell = new EmptyCell();
+        for (CellPosition position : allPositions) {
+            updateCellAt(position, cell);
+        }
     }
 
     private void initializeLandMineCells(List<CellPosition> landMinePositions) {
-        updateCellsAt(landMinePositions, new LandMineCell ());
+        Cell cell = new LandMineCell ();
+        for (CellPosition position : landMinePositions) {
+            updateCellAt(position, cell);
+        }
     }
 
     private void initializeNumberCells(List<CellPosition> numberPositionCandidates) {
@@ -49,12 +53,6 @@ public class GameBoard {
             if (count != 0) {
                 updateCellAt(candidate, new NumberCell(count));
             }
-        }
-    }
-
-    private void updateCellsAt(List<CellPosition> allPositions, Cell cell) {
-        for (CellPosition position : allPositions) {
-            updateCellAt(position, cell);
         }
     }
 
