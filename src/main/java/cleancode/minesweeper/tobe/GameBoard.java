@@ -25,13 +25,25 @@ public class GameBoard {
 
     public void initializeGame() {
         CellPositions cellPositions = CellPositions.from(board);
-        List<CellPosition> allPositions = cellPositions.getPositions();
-        updateCellsAt(allPositions, new EmptyCell());
+        initializeEmptyCells(cellPositions);
 
         List<CellPosition> landMinePositions = cellPositions.extractRandomPositions(landMineCount);
-        updateCellsAt(landMinePositions, new LandMineCell ());
+        initializeLandMineCells(landMinePositions);
 
         List<CellPosition> numberPositionCandidates = cellPositions.subtract(landMinePositions);
+        initializeNumberCells(numberPositionCandidates);
+    }
+
+    private void initializeEmptyCells(CellPositions cellPositions) {
+        List<CellPosition> allPositions = cellPositions.getPositions();
+        updateCellsAt(allPositions, new EmptyCell());
+    }
+
+    private void initializeLandMineCells(List<CellPosition> landMinePositions) {
+        updateCellsAt(landMinePositions, new LandMineCell ());
+    }
+
+    private void initializeNumberCells(List<CellPosition> numberPositionCandidates) {
         for (CellPosition candidate : numberPositionCandidates) {
             int count = countNearbyLandMins(candidate);
             if (count != 0) {
