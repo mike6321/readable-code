@@ -13,11 +13,6 @@ public class ConsoleInputHandler implements InputHandler {
     public static final Scanner SCANNER = new Scanner(System.in);
 
     @Override
-    public String getUserInput() {
-        return SCANNER.nextLine();
-    }
-
-    @Override
     public UserAction getUserActionFromUser() {
         String userInput = SCANNER.nextLine();
 
