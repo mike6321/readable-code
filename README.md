@@ -78,3 +78,136 @@ public String getSign() {
 2. **별도 배열 제거**: `LAND_MINES`, `NEARBY_LAND_MINE_COUNTS` 배열 삭제 → `BOARD` 하나로 통합
 3. **객체에게 메시지 보내기**: `cell.flag()`, `cell.opened()` 처럼 객체에게 행동을 요청
 4. **Tell, Don't Ask**: 상태를 꺼내서 판단하지 않고, 객체가 스스로 판단 (`cell.isChecked()`)
+
+---
+
+## Enum의 특성과 활용 #3 - 그리는 책임을 ConsoleOutputHandler로 이동
+
+이 커밋의 핵심은 **Cell이 "어떻게 그릴지"를 결정하지 않고, 출력 담당 객체(ConsoleOutputHandler)가 결정하도록 책임을 분리**한 것입니다.
+
+---
+
+### 변경 전 (Before) - Cell이 출력 형식까지 결정
+
+```java
+// Cell 인터페이스에 출력용 상수가 존재
+public interface Cell {
+    String FLAG_SIGN = "⚑";
+    String UNCHECKED_SIGN = "□";
+    
+    String getSign();  // Cell이 직접 문자열 반환
+}
+
+// 각 Cell 구현체가 어떤 기호로 보여줄지 결정
+public class LandMineCell implements Cell {
+    private static final String LAND_MINE_SIGN = "☼";
+    
+    @Override
+    public String getSign() {
+        if (cellState.isOpened()) return LAND_MINE_SIGN;
+        if (cellState.isFlagged()) return FLAG_SIGN;
+        return UNCHECKED_SIGN;
+    }
+}
+```
+
+**문제점**: 도메인 객체(Cell)가 UI 표현 방식(콘솔 기호)을 알고 있음
+
+---
+
+### 변경 후 (After) - Cell은 상태만, 출력은 OutputHandler가
+
+#### 1. CellSnapshotStatus (Enum) 도입
+
+```java
+public enum CellSnapshotStatus {
+    EMPTY("빈 셀"),
+    FLAG("깃발"),
+    LAND_MINE("지뢰"),
+    NUMBER("숫자"),
+    UNCHECKED("확인 전");
+}
+```
+
+#### 2. CellSnapshot (DTO) 도입
+
+```java
+public class CellSnapshot {
+    private final CellSnapshotStatus status;
+    private final int nearByLandMineCount;
+    
+    public static CellSnapshot ofEmpty() { ... }
+    public static CellSnapshot ofFlag() { ... }
+    public static CellSnapshot ofLandMine() { ... }
+    public static CellSnapshot ofNumber(int count) { ... }
+    public static CellSnapshot ofUnchecked() { ... }
+}
+```
+
+#### 3. Cell은 Snapshot만 반환
+
+```java
+public interface Cell {
+    CellSnapshot getSnapshot();  // 문자열 대신 상태 객체 반환
+}
+
+public class LandMineCell implements Cell {
+    @Override
+    public CellSnapshot getSnapshot() {
+        if (cellState.isOpened()) return CellSnapshot.ofLandMine();
+        if (cellState.isFlagged()) return CellSnapshot.ofFlag();
+        return CellSnapshot.ofUnchecked();
+    }
+}
+```
+
+#### 4. ConsoleOutputHandler가 기호 결정
+
+```java
+public class ConsoleOutputHandler implements OutputHandler {
+    private static final String LAND_MINE_SIGN = "☼";
+    private static final String EMPTY_SIGN = "■";
+    private static final String FLAG_SIGN = "⚑";
+    private static final String UNCHECKED_SIGN = "□";
+    
+    private String decideCellSignFrom(CellSnapshot snapshot) {
+        CellSnapshotStatus status = snapshot.getStatus();
+        if (status == CellSnapshotStatus.EMPTY) return EMPTY_SIGN;
+        if (status == CellSnapshotStatus.FLAG) return FLAG_SIGN;
+        if (status == CellSnapshotStatus.NUMBER) return String.valueOf(snapshot.getNearByLandMineCount());
+        if (status == CellSnapshotStatus.UNCHECKED) return UNCHECKED_SIGN;
+        if (status == CellSnapshotStatus.LAND_MINE) return LAND_MINE_SIGN;
+        throw new IllegalStateException("Unknown status: " + status);
+    }
+}
+```
+
+---
+
+### 주요 변경 사항 비교
+
+| 항목 | Before | After |
+|------|--------|-------|
+| Cell 반환값 | `String getSign()` | `CellSnapshot getSnapshot()` |
+| 출력 기호 상수 위치 | `Cell` 인터페이스 | `ConsoleOutputHandler` |
+| 기호 결정 책임 | 각 Cell 구현체 | `ConsoleOutputHandler` |
+
+---
+
+### 설계 의도
+
+1. **관심사의 분리 (Separation of Concerns)**
+   - Cell: 게임 로직과 상태 관리에만 집중
+   - ConsoleOutputHandler: 출력 형식 결정에만 집중
+
+2. **출력 방식 교체 용이**
+   - 콘솔 → GUI로 변경 시 `Cell` 수정 불필요
+   - 새로운 `GuiOutputHandler`만 구현하면 됨
+
+3. **Enum을 통한 타입 안전성**
+   - 문자열 대신 `CellSnapshotStatus` Enum 사용
+   - 컴파일 타임에 오류 검출 가능
+
+4. **Snapshot 패턴**
+   - 현재 상태의 "스냅샷"을 전달하여 불변성 확보
+   - Cell 내부 상태를 직접 노출하지 않음
