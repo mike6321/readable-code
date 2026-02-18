@@ -49,6 +49,9 @@ public class ConsoleOutputHandler implements OutputHandler{
         if (status == CellSnapshotStatus.FLAG) {
             return FLAG_SIGN;
         }
+        if (status == CellSnapshotStatus.LAND_MINE) {
+            return LAND_MINE_SIGN;
+        }
         if (status == CellSnapshotStatus.NUMBER) {
             return String.valueOf(snapshot.getNearByLandMineCount());
         }
