@@ -21,6 +21,11 @@ public class GameBoard {
         this.landMineCount = gameLevel.getLandMineCount();
     }
 
+    public CellSnapshot getSnapShot(CellPosition cellPosition) {
+        Cell cell = findCell(cellPosition);
+        return cell.getSnapshot();
+    }
+
     public void initializeGame() {
         CellPositions cellPositions = CellPositions.from(board);
         initializeEmptyCells(cellPositions);
@@ -81,11 +86,6 @@ public class GameBoard {
 
     public int getColumnSize() {
         return this.board[0].length;
-    }
-
-    public String getSign(CellPosition cellPosition) {
-        Cell cell = findCell(cellPosition);
-        return cell.getSign();
     }
 
     private Cell findCell(CellPosition cellPosition) {
