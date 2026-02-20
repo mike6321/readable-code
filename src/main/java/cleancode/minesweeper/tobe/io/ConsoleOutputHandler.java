@@ -38,19 +38,8 @@ public class ConsoleOutputHandler implements OutputHandler{
     }
 
     private String decideCellSignFrom(CellSnapshot snapshot) {
-        List<CellSignProvidable> cellSignProviders = List.of(
-                new EmptyCellSignProvider(),
-                new FlagCellSignProvider(),
-                new LandMineCellSignProvider(),
-                new NumberCellSignProvider(),
-                new UncheckedCellSignProvider()
-        );
-
-        return cellSignProviders.stream()
-                .filter(provider -> provider.supports(snapshot))
-                .findFirst()
-                .map(provider -> provider.provide(snapshot))
-                .orElseThrow(() -> new IllegalStateException("Unknown CellSnapshot status"));
+        CellSignFinder cellSignFinder = new CellSignFinder();
+        return cellSignFinder.findCellSignFrom(snapshot);
     }
 
     private String generateColumnAlphabets(GameBoard board) {
