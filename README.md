@@ -480,3 +480,115 @@ if-else 분기가 여전히 존재합니다. 새로운 `CellSnapshotStatus`가 �
 2. **`decideCellSignFrom` 메서드에 if문 추가** ← 여전히 수정 필요!
 
 → 다음 커밋에서 if-else를 완전히 제거할 예정
+
+---
+
+## 다형성 활용하기 #3 - if-else 완전 제거
+
+드디어 **if-else 분기를 완전히 제거**하고 다형성을 완성한 커밋입니다.
+
+---
+
+### 핵심 변경 1: `supports()` 메서드 추가
+
+각 Provider가 **자신이 처리할 수 있는 상태인지 스스로 판단**하도록 변경
+
+```java
+public interface CellSignProvidable {
+    boolean supports(CellSnapshot cellSnapshot);  // 추가!
+    String provide(CellSnapshot cellSnapshot);
+}
+```
+
+```java
+public class EmptyCellSignProvider implements CellSignProvidable {
+    @Override
+    public boolean supports(CellSnapshot cellSnapshot) {
+        return cellSnapshot.isSameStatus(CellSnapshotStatus.EMPTY);
+    }
+
+    @Override
+    public String provide(CellSnapshot cellSnapshot) {
+        return EMPTY_SIGN;
+    }
+}
+```
+
+---
+
+### 핵심 변경 2: `CellSnapshot`에 헬퍼 메서드 추가
+
+```java
+public class CellSnapshot {
+    public boolean isSameStatus(CellSnapshotStatus cellSnapshotStatus) {
+        return this.status == cellSnapshotStatus;
+    }
+}
+```
+
+---
+
+### 핵심 변경 3: if-else → Stream으로 대체
+
+**Before (if-else 체인):**
+
+```java
+private String decideCellSignFrom(CellSnapshot snapshot) {
+    CellSnapshotStatus status = snapshot.getStatus();
+    if (status == CellSnapshotStatus.EMPTY) {
+        return new EmptyCellSignProvider().provide(snapshot);
+    }
+    if (status == CellSnapshotStatus.FLAG) {
+        return new FlagCellSignProvider().provide(snapshot);
+    }
+    // ... 계속되는 if-else
+    throw new IllegalStateException("Unknown status");
+}
+```
+
+**After (다형성 + Stream):**
+
+```java
+private String decideCellSignFrom(CellSnapshot snapshot) {
+    List<CellSignProvidable> cellSignProviders = List.of(
+            new EmptyCellSignProvider(),
+            new FlagCellSignProvider(),
+            new LandMineCellSignProvider(),
+            new NumberCellSignProvider(),
+            new UncheckedCellSignProvider()
+    );
+
+    return cellSignProviders.stream()
+            .filter(provider -> provider.supports(snapshot))
+            .findFirst()
+            .map(provider -> provider.provide(snapshot))
+            .orElseThrow(() -> new IllegalStateException("Unknown status"));
+}
+```
+
+---
+
+### 새로운 상태 추가 시 비교
+
+| 단계 | Before (if-else) | After (다형성) |
+|------|------------------|----------------|
+| 1 | Provider 클래스 생성 | Provider 클래스 생성 |
+| 2 | **if문 추가 (기존 코드 수정)** | List에 추가만 |
+| 3 | - | **기존 로직 수정 없음!** |
+
+---
+
+### 설계 의도
+
+1. **OCP (Open-Closed Principle) 완성**
+   - 새 상태 추가 시 기존 코드 수정 없이 확장 가능
+   
+2. **책임의 분산**
+   - "내가 처리할 수 있는가?" 판단을 각 Provider가 담당
+   - `ConsoleOutputHandler`는 판단하지 않고 위임만 함
+
+3. **Chain of Responsibility 패턴**
+   - Provider 목록을 순회하며 처리 가능한 객체를 찾음
+
+4. **선언적 코드**
+   - "어떻게(How)"가 아닌 "무엇을(What)" 중심으로 표현
