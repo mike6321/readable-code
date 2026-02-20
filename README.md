@@ -395,3 +395,88 @@ private void initializeLandMineCells(List<CellPosition> landMinePositions) {
 3. **Flyweight 패턴과의 차이**
    - 불변 객체라면 인스턴스 공유 가능 (Flyweight 패턴)
    - 가변 객체는 반드시 별도 인스턴스 필요
+
+---
+
+## 다형성 활용하기 #2 - Provider 적용 (중간 단계)
+
+이전 커밋에서 만든 `CellSignProvider`들을 **실제로 사용**하기 시작한 커밋입니다.
+
+---
+
+### 변경 전 - 직접 문자열 반환
+
+```java
+public class ConsoleOutputHandler implements OutputHandler {
+    private static final String LAND_MINE_SIGN = "☼";
+    private static final String EMPTY_SIGN = "■";
+    private static final String FLAG_SIGN = "⚑";
+    private static final String UNCHECKED_SIGN = "□";
+
+    private String decideCellSignFrom(CellSnapshot snapshot) {
+        CellSnapshotStatus status = snapshot.getStatus();
+        if (status == CellSnapshotStatus.EMPTY) {
+            return EMPTY_SIGN;
+        }
+        if (status == CellSnapshotStatus.FLAG) {
+            return FLAG_SIGN;
+        }
+        // ...
+    }
+}
+```
+
+---
+
+### 변경 후 - Provider를 통해 반환
+
+```java
+public class ConsoleOutputHandler implements OutputHandler {
+    // 상수 제거됨!
+
+    private String decideCellSignFrom(CellSnapshot snapshot) {
+        CellSnapshotStatus status = snapshot.getStatus();
+        if (status == CellSnapshotStatus.EMPTY) {
+            CellSignProvidable cellSignProvider = new EmptyCellSignProvider();
+            return cellSignProvider.provide(snapshot);
+        }
+        if (status == CellSnapshotStatus.FLAG) {
+            CellSignProvidable cellSignProvider = new FlagCellSignProvider();
+            return cellSignProvider.provide(snapshot);
+        }
+        if (status == CellSnapshotStatus.LAND_MINE) {
+            CellSignProvidable cellSignProvider = new LandMineCellSignProvider();
+            return cellSignProvider.provide(snapshot);
+        }
+        if (status == CellSnapshotStatus.NUMBER) {
+            CellSignProvidable cellSignProvider = new NumberCellSignProvider();
+            return cellSignProvider.provide(snapshot);
+        }
+        if (status == CellSnapshotStatus.UNCHECKED) {
+            CellSignProvidable cellSignProvider = new UncheckedCellSignProvider();
+            return cellSignProvider.provide(snapshot);
+        }
+        throw new IllegalStateException("Unknown status: " + status);
+    }
+}
+```
+
+---
+
+### 현재 상태 분석
+
+| 항목 | 상태 |
+|------|------|
+| 상수 분리 | ✅ 완료 (각 Provider로 이동) |
+| Provider 사용 | ✅ 완료 |
+| if-else 제거 | ❌ 아직 남아있음 |
+
+---
+
+### 아직 남은 문제
+
+if-else 분기가 여전히 존재합니다. 새로운 `CellSnapshotStatus`가 추가되면:
+1. 새 Provider 클래스 생성
+2. **`decideCellSignFrom` 메서드에 if문 추가** ← 여전히 수정 필요!
+
+→ 다음 커밋에서 if-else를 완전히 제거할 예정
