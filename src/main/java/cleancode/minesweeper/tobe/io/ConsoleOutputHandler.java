@@ -4,17 +4,13 @@ import cleancode.minesweeper.tobe.GameBoard;
 import cleancode.minesweeper.tobe.GameException;
 import cleancode.minesweeper.tobe.cell.CellSnapshot;
 import cleancode.minesweeper.tobe.cell.CellSnapshotStatus;
+import cleancode.minesweeper.tobe.io.sign.*;
 import cleancode.minesweeper.tobe.position.CellPosition;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class ConsoleOutputHandler implements OutputHandler{
-
-    private static final String LAND_MINE_SIGN = "☼";
-    private static final String EMPTY_SIGN = "■";
-    private static final String FLAG_SIGN = "⚑";
-    private static final String UNCHECKED_SIGN = "□";
 
     @Override
     public void showGameStartComments() {
@@ -44,19 +40,24 @@ public class ConsoleOutputHandler implements OutputHandler{
     private String decideCellSignFrom(CellSnapshot snapshot) {
         CellSnapshotStatus status = snapshot.getStatus();
         if (status == CellSnapshotStatus.EMPTY) {
-            return EMPTY_SIGN;
+            CellSignProvidable cellSignProvider = new EmptyCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
         if (status == CellSnapshotStatus.FLAG) {
-            return FLAG_SIGN;
+            CellSignProvidable cellSignProvider = new FlagCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
         if (status == CellSnapshotStatus.LAND_MINE) {
-            return LAND_MINE_SIGN;
+            CellSignProvidable cellSignProvider = new LandMineCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
         if (status == CellSnapshotStatus.NUMBER) {
-            return String.valueOf(snapshot.getNearByLandMineCount());
+            CellSignProvidable cellSignProvider = new NumberCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
         if (status == CellSnapshotStatus.UNCHECKED) {
-            return UNCHECKED_SIGN;
+            CellSignProvidable cellSignProvider = new UncheckedCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
 
         throw new IllegalStateException("Unknown CellSnapshot status: " + status);
