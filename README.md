@@ -326,3 +326,72 @@ CellSignProvidable (인터페이스)
 
 4. **전략 패턴 (Strategy Pattern) 준비**
    - 상황에 맞는 Provider를 선택하여 사용하는 구조
+
+---
+
+## 버그 픽스 - Cell 인스턴스 공유 문제
+
+### 증상
+
+깃발을 하나만 꽂았는데 **여러 셀에 깃발이 동시에 꽂히는** 현상
+
+```
+선택할 좌표를 입력하세요. (예: a1)
+b1
+선택한 셀에 대한 행위를 선택하세요. (1: 오픈, 2: 깃발 꽂기)
+2
+    a b c d e
+ 1  ⚑ ⚑ ⚑ ⚑ ⚑    ← 전부 깃발!
+ 2  □ □ □ ⚑ ⚑ 
+ 3  □ ⚑ □ ⚑ ⚑ 
+ 4  □ □ □ ⚑ ⚑ 
+```
+
+---
+
+### 원인 - 동일 인스턴스 공유
+
+```java
+private void initializeEmptyCells(CellPositions cellPositions) {
+    List<CellPosition> allPositions = cellPositions.getPositions();
+    Cell cell = new EmptyCell();  // ← 하나의 인스턴스 생성
+    for (CellPosition position : allPositions) {
+        updateCellAt(position, cell);  // ← 모든 위치에 같은 객체 할당!
+    }
+}
+```
+
+**모든 셀이 동일한 `EmptyCell` 객체를 참조**하고 있어서, 하나의 셀에 `flag()`를 호출하면 모든 셀에 영향을 줌
+
+---
+
+### 해결 - 각 위치마다 새 인스턴스 생성
+
+```java
+private void initializeEmptyCells(CellPositions cellPositions) {
+    List<CellPosition> allPositions = cellPositions.getPositions();
+    for (CellPosition position : allPositions) {
+        updateCellAt(position, new EmptyCell());  // ← 매번 새 인스턴스!
+    }
+}
+
+private void initializeLandMineCells(List<CellPosition> landMinePositions) {
+    for (CellPosition position : landMinePositions) {
+        updateCellAt(position, new LandMineCell());  // ← 매번 새 인스턴스!
+    }
+}
+```
+
+---
+
+### 교훈
+
+1. **가변 객체(Mutable Object) 공유 주의**
+   - 상태를 가진 객체를 여러 곳에서 공유하면 의도치 않은 부작용 발생
+   
+2. **불변 객체가 아니라면 인스턴스를 공유하지 말 것**
+   - `CellState`가 가변이므로 `Cell`도 가변 → 공유하면 안 됨
+
+3. **Flyweight 패턴과의 차이**
+   - 불변 객체라면 인스턴스 공유 가능 (Flyweight 패턴)
+   - 가변 객체는 반드시 별도 인스턴스 필요

@@ -39,16 +39,14 @@ public class GameBoard {
 
     private void initializeEmptyCells(CellPositions cellPositions) {
         List<CellPosition> allPositions = cellPositions.getPositions();
-        Cell cell = new EmptyCell();
         for (CellPosition position : allPositions) {
-            updateCellAt(position, cell);
+            updateCellAt(position, new EmptyCell());
         }
     }
 
     private void initializeLandMineCells(List<CellPosition> landMinePositions) {
-        Cell cell = new LandMineCell ();
         for (CellPosition position : landMinePositions) {
-            updateCellAt(position, cell);
+            updateCellAt(position, new LandMineCell());
         }
     }
 
