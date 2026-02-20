@@ -59,8 +59,8 @@ public class CellPosition {
     }
 
     public boolean canCalculatePositionBy(RelativePosition relativePosition) {
-        return this.rowIndex + relativePosition.getDeltaRow() > 0
-                && this.columnIndex + relativePosition.getDeltaColumn() > 0;
+        return this.rowIndex + relativePosition.getDeltaRow() >= 0
+                && this.columnIndex + relativePosition.getDeltaColumn() >= 0;
     }
 
     public boolean isRowIndexLessThan(int rowIndex) {
