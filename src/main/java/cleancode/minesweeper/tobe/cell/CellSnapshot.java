@@ -28,6 +28,10 @@ public class CellSnapshot {
         return new CellSnapshot(status, nearByLandMineCount);
     }
 
+    public boolean isSameStatus(CellSnapshotStatus cellSnapshotStatus) {
+        return this.status == cellSnapshotStatus;
+    }
+
     public static CellSnapshot ofEmpty() {
         return of(CellSnapshotStatus.EMPTY, 0);
     }
@@ -55,5 +59,4 @@ public class CellSnapshot {
     public CellSnapshotStatus getStatus() {
         return status;
     }
-
 }

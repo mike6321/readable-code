@@ -38,29 +38,19 @@ public class ConsoleOutputHandler implements OutputHandler{
     }
 
     private String decideCellSignFrom(CellSnapshot snapshot) {
-        CellSnapshotStatus status = snapshot.getStatus();
-        if (status == CellSnapshotStatus.EMPTY) {
-            CellSignProvidable cellSignProvider = new EmptyCellSignProvider();
-            return cellSignProvider.provide(snapshot);
-        }
-        if (status == CellSnapshotStatus.FLAG) {
-            CellSignProvidable cellSignProvider = new FlagCellSignProvider();
-            return cellSignProvider.provide(snapshot);
-        }
-        if (status == CellSnapshotStatus.LAND_MINE) {
-            CellSignProvidable cellSignProvider = new LandMineCellSignProvider();
-            return cellSignProvider.provide(snapshot);
-        }
-        if (status == CellSnapshotStatus.NUMBER) {
-            CellSignProvidable cellSignProvider = new NumberCellSignProvider();
-            return cellSignProvider.provide(snapshot);
-        }
-        if (status == CellSnapshotStatus.UNCHECKED) {
-            CellSignProvidable cellSignProvider = new UncheckedCellSignProvider();
-            return cellSignProvider.provide(snapshot);
-        }
+        List<CellSignProvidable> cellSignProviders = List.of(
+                new EmptyCellSignProvider(),
+                new FlagCellSignProvider(),
+                new LandMineCellSignProvider(),
+                new NumberCellSignProvider(),
+                new UncheckedCellSignProvider()
+        );
 
-        throw new IllegalStateException("Unknown CellSnapshot status: " + status);
+        return cellSignProviders.stream()
+                .filter(provider -> provider.supports(snapshot))
+                .findFirst()
+                .map(provider -> provider.provide(snapshot))
+                .orElseThrow(() -> new IllegalStateException("Unknown CellSnapshot status"));
     }
 
     private String generateColumnAlphabets(GameBoard board) {
