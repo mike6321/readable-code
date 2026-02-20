@@ -31,7 +31,7 @@ public class ConsoleOutputHandler implements OutputHandler{
             for (int col = 0; col < board.getColumnSize() ; col++) {
                 CellPosition cellPosition = CellPosition.of(row, col);
                 CellSnapshot snapshot = board.getSnapShot(cellPosition);
-                String cellSign = cellSignFinder.findCellSignFrom(snapshot);
+                String cellSign = CellSignProvider.findCellSignFrom(snapshot);
                 System.out.print(cellSign + " ");
             }
             System.out.println();
