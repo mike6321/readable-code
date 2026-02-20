@@ -55,10 +55,14 @@ public enum CellSignProvider implements CellSignProvidable {
     }
 
     public static String findCellSignFrom(CellSnapshot snapshot) {
+        CellSignProvider cellSignProvider = findBy(snapshot);
+        return cellSignProvider.provide(snapshot);
+    }
+
+    private static CellSignProvider findBy(CellSnapshot snapshot) {
         return Arrays.stream(values())
                 .filter(provider -> provider.supports(snapshot))
                 .findFirst()
-                .map(provider -> provider.provide(snapshot))
                 .orElseThrow(() -> new IllegalStateException("Unknown CellSnapshot status"));
     }
 
