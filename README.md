@@ -211,3 +211,118 @@ public class ConsoleOutputHandler implements OutputHandler {
 4. **Snapshot 패턴**
    - 현재 상태의 "스냅샷"을 전달하여 불변성 확보
    - Cell 내부 상태를 직접 노출하지 않음
+
+---
+
+## 다형성 활용하기 #1 - CellSignProvider 구조 도입
+
+이 커밋은 **if-else 분기를 다형성으로 대체하기 위한 구조를 준비**한 것입니다.
+
+---
+
+### 문제 상황 - ConsoleOutputHandler의 if-else 체인
+
+이전 커밋에서 `ConsoleOutputHandler`에 다음과 같은 코드가 있었습니다:
+
+```java
+private String decideCellSignFrom(CellSnapshot snapshot) {
+    CellSnapshotStatus status = snapshot.getStatus();
+    if (status == CellSnapshotStatus.EMPTY) return EMPTY_SIGN;
+    if (status == CellSnapshotStatus.FLAG) return FLAG_SIGN;
+    if (status == CellSnapshotStatus.NUMBER) return String.valueOf(snapshot.getNearByLandMineCount());
+    if (status == CellSnapshotStatus.UNCHECKED) return UNCHECKED_SIGN;
+    if (status == CellSnapshotStatus.LAND_MINE) return LAND_MINE_SIGN;
+    throw new IllegalStateException("Unknown status: " + status);
+}
+```
+
+**문제점**: 새로운 셀 상태가 추가되면 if-else를 수정해야 함 (OCP 위반)
+
+---
+
+### 해결 - 인터페이스 + 각 상태별 구현체
+
+#### 1. CellSignProvidable 인터페이스
+
+```java
+public interface CellSignProvidable {
+    String provide(CellSnapshot cellSnapshot);
+}
+```
+
+#### 2. 각 상태별 Provider 구현체
+
+```java
+public class EmptyCellSignProvider implements CellSignProvidable {
+    private static final String EMPTY_SIGN = "■";
+    
+    @Override
+    public String provide(CellSnapshot cellSnapshot) {
+        return EMPTY_SIGN;
+    }
+}
+
+public class FlagCellSignProvider implements CellSignProvidable {
+    private static final String FLAG_SIGN = "⚑";
+    
+    @Override
+    public String provide(CellSnapshot cellSnapshot) {
+        return FLAG_SIGN;
+    }
+}
+
+public class LandMineCellSignProvider implements CellSignProvidable {
+    private static final String LAND_MINE_SIGN = "☼";
+    
+    @Override
+    public String provide(CellSnapshot cellSnapshot) {
+        return LAND_MINE_SIGN;
+    }
+}
+
+public class NumberCellSignProvider implements CellSignProvidable {
+    @Override
+    public String provide(CellSnapshot cellSnapshot) {
+        return String.valueOf(cellSnapshot.getNearByLandMineCount());
+    }
+}
+
+public class UncheckedCellSignProvider implements CellSignProvidable {
+    private static final String UNCHECKED_SIGN = "□";
+    
+    @Override
+    public String provide(CellSnapshot cellSnapshot) {
+        return UNCHECKED_SIGN;
+    }
+}
+```
+
+---
+
+### 구조 다이어그램
+
+```
+CellSignProvidable (인터페이스)
+        │
+        ├── EmptyCellSignProvider      → "■"
+        ├── FlagCellSignProvider       → "⚑"
+        ├── LandMineCellSignProvider   → "☼"
+        ├── NumberCellSignProvider     → "1"~"8"
+        └── UncheckedCellSignProvider  → "□"
+```
+
+---
+
+### 설계 의도
+
+1. **OCP (Open-Closed Principle)**
+   - 새로운 셀 상태 추가 시 기존 코드 수정 없이 새 Provider만 추가
+   
+2. **SRP (Single Responsibility Principle)**
+   - 각 Provider는 하나의 상태에 대한 기호만 책임짐
+
+3. **다형성을 통한 분기 제거**
+   - if-else 체인 → 인터페이스 호출로 대체 예정 (다음 커밋에서)
+
+4. **전략 패턴 (Strategy Pattern) 준비**
+   - 상황에 맞는 Provider를 선택하여 사용하는 구조
